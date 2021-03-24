@@ -1,0 +1,31 @@
+a) ( F ) Os parâmetros de uma função podem ser passados por valor, se um parâmetro é passado por valor o seu
+conteúdo não é alterado dentro da função.
+    R- O conteúdo pode ser alterado dentro da função.
+b) ( V ) Um parâmetro de uma função está sendo passado por referência quando ao chamar a função passa-se o *
+junto a variável referente aquele parâmetro, para que o mesmo possa ser alterado.
+c) ( V ) A ordem dos parâmetros em uma função depende dos valores que se deseja passar na chamada da função.
+d) ( V ) Uma chamada recursiva acontece quando uma função chama a si mesma, e neste momento se um parâmetro
+for passado por referência deve-se colocar o &.
+e) ( F ) A chamada recursiva pode tornar um laço infinito se a variável de retorno da função, for sempre reiniciada,
+dentro da função.
+    R-  um laço infinito numa recursão pode ocorrer quando não é definida uma condição de parada
+f) ( F ) Um recursão com pendência só acontece quando se chama a função mais de uma vez.
+    R- Uma recursão com pendência ocorre quando a função deixa tarefas pendentes e então só as resolve
+    quando chega a sua condição de parada e desempilha  o que tinha ficado pendente
+g) ( F ) Uma função recursiva não pode retornar valor pela função, ou seja, usar return, pois assim ela sempre
+retornará o primeiro valor.
+    R- função recursiva pode usar return, retornando ela mesma.
+h) ( F ) Vetor é um conjunto de dados do mesmo tipo, a qual é alocado um espaço todas as vezes que se necessitar
+colocar um novo valor.
+    R-  O espaço em um vetor é pre-alocado quando ele é declarado 
+i) ( F ) O acesso ao vetor é sequencial, ou seja, para acessar o elemento da posição 10 se faz necessário acessar
+todos os anteriores primeiro.
+    R- pode-se acessar a posição de um vetor diretamente:. ex: v[2]
+j) ( F ) Uma fila estática é uma estrutura que permite que o elemento sempre fique no mesmo lugar, como o próprio
+nome diz, estático.
+    R- quando uma fila é estatica, significa que ela tem um tamanho pre-definido e os elementos são
+    gerenciados de modo que o insere-se no inicio e remove do final.
+
+k) ( F ) Uma pilha estática pode conter vários tipos de dados, desempilhando sempre o do topo da pilha e inserindo
+no topo.
+    R- Pode conter apenas um tipo de dado
