@@ -1,16 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* para o funcionamento da função é necessário uma variavel do tipo int sendo referênciada
+ e uma string podendo ler do teclado ou se preferir pode ser predefinida
+*/
 void vogais1(char string[], int *qtd);
+
+// é necessário uma string
 int vogais2(char string[]);
+
+//OBS:. esta terceira função foi um teste para tentar juntar as funções. O que deu muito certo :D !!
 int vogais3(char string[], int *qtd);
 
 
-/* para o funcionamento das funções são necessárias uma variavel do tipo int e uma string
-podendo ler do teclado ou se preferir pode ser predefinido
 
-OBS:. esta terceira função foi um teste para tentar juntar as funções. O que deu muito certo :D !!
-*/
+
 int main()
 {
     int n = 0;
@@ -33,6 +37,7 @@ int main()
 // o parametro que representa a quantidade de vogais é passado por referencia
 void vogais1(char string[], int *qtd)
 {
+    // aqui foi considerado que a string não contém espaços, ou seja, a string é apenas uma palavra
     for(int i=0; string[i] != '\0'; i++)
     {
         // verifica se o caractere é vogal e se sim, incrementa o valor
@@ -52,7 +57,8 @@ void vogais1(char string[], int *qtd)
 
 
 //  retorna pela função a quantidade de vogais
-// recebe uma string como parametro de entrada e é do tipo int para que posso retornar um resultado
+// recebe uma string como parametro de entrada
+// a função é do tipo int para que possa retornar um resultado do mesmo tipo
 int vogais2(char string[])
 {
     int qtd = 0;
