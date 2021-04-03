@@ -1,0 +1,19 @@
+a)  px é uma variável ponteiro do tipo int que aponta para o endereço de memória de x. E x é uma variavel que armazena o valor inteiro 500.
+
+b)  a diferença de px e py são seus endereços e os endereços a qual apontam (px aponta para x e py aponta para y).
+
+c)  x = 500, End. x = endereço de x, px = endereço que px aponta(no caso o end. de x), y = 700 
+
+d)  A função "altera1" recebe o ponteiro px referenciado, no caso, o conteúdo do endereço que px    aponta, e recebe tambem o endereço de y referenciado, nela o conteudo de x agora recebe o conteúdo de y e y é incrementado em 50. há apenas alteraçoes no conteúdo dos endereços.
+    Resultando
+x = 700, End. x = endereço de x, px = endereço que px aponta(no caso o end. de x), y = 750
+    
+
+e)  y = 750, End. y = endereço de y, py = endereço que py aponta(no caso o end. de y), x = 700
+
+
+f)  A função "altera2" recebe o ponteiro py referenciado (o conteúdo do endereço em que py aponta) e também o endereço de x. Nela o ponteiro py recebe um novo endereço que será o endereço de x. E o conteúdo de x é incrementado em 300, que será igual a 1000. 
+Resultando na seguinte saída:
+    y = 750, End. y = endereço de y, py = endereço que py aponta(no caso o end. de x), x = 1000
+
+g) A função altera1 manipula apenas os conteúdos nos endereços referênciados e o altera2 também altera o endereço referênciado no primeiro parâmetro.
