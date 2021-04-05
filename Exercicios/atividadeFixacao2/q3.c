@@ -33,13 +33,12 @@ int main(){
         printf("CPF: ");
         scanf("%d", &pessoa->cpf);
 
-        printf("%p | %p | %p", pessoa->nome, &pessoa->cpf, &pessoa);
         // imprime o endereço na qual os dados da pessoa está alocado e os dados (nome e cpf)
-        printf("\nend. Pessoa: %p\nNOME: %s\nCPF: %d\n", &pessoa, pessoa->nome, pessoa->cpf);
+        printf("\nend. Pessoa: %p\nNOME: %s\nCPF: %d\n", pessoa, pessoa->nome, pessoa->cpf);
         
         alteraNome(&pessoa);
         // imprime novamente depois de alterar o nome
-        printf("\nend. Pessoa: %p\nNOME: %s\nCPF: %d\n", &pessoa, pessoa->nome, pessoa->cpf);
+        printf("\nend. Pessoa: %p\nNOME: %s\nCPF: %d\n", pessoa, pessoa->nome, pessoa->cpf);
         //desalocando memoria (libera os espaço de memória alocado no malloc)
         // menu
         printf("\n1- continuar\n0- sair\n");
