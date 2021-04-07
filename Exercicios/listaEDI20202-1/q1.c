@@ -3,7 +3,7 @@
 #include <time.h>
 
 
-//recebe uma matriz por referencia e a ordem da mesma também por referencia
+//recebe uma matriz e a ordem da mesma também por referencia
 void preenche(int **mat,int i,int j,int *tam){
     for(int  i=0; i < *tam;i++){
         for(int  j=0; j < *tam;j++){

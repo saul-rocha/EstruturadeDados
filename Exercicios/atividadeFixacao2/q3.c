@@ -20,11 +20,11 @@ void alteraNome(struct Pessoa **p){
 
 
 int main(){
-    int esc;
 
+    int esc;
+    // cria um ponteiro do tipo Pessoa
+    struct Pessoa *pessoa;
     do{
-        // cria um ponteiro do tipo Pessoa
-        struct Pessoa *pessoa;
         //aloca um espaço de memória para pessoa
         pessoa = (struct Pessoa *)malloc(sizeof(struct Pessoa));
         // ler os dados e armazena em um ponteiro 
@@ -35,7 +35,6 @@ int main(){
 
         // imprime o endereço na qual os dados da pessoa está alocado e os dados (nome e cpf)
         printf("\nend. Pessoa: %p\nNOME: %s\nCPF: %d\n", pessoa, pessoa->nome, pessoa->cpf);
-        
         alteraNome(&pessoa);
         // imprime novamente depois de alterar o nome
         printf("\nend. Pessoa: %p\nNOME: %s\nCPF: %d\n", pessoa, pessoa->nome, pessoa->cpf);
@@ -43,6 +42,7 @@ int main(){
         // menu
         printf("\n1- continuar\n0- sair\n");
         scanf("%d", &esc);
+
         free(pessoa);
 
     }while (esc != 0);//condição de parada
