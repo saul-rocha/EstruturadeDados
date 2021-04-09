@@ -12,9 +12,9 @@ struct Pessoa
 
 // altera o nome
 // passa uma struct do tipo pessoa referenciada como parametro
-void alteraNome(struct Pessoa **p){
+void alteraNome(struct Pessoa *p){
     printf("NOVO NOME: ");
-    scanf("%s", (**p).nome);//ler uma nova string e coloca no conteúdo do endereço referenciado
+    scanf("%s", (*p).nome);//ler uma nova string e coloca no conteúdo do endereço referenciado
     // OBS:. poderia também ser dereferenciado da seguinte forma: p->nome
 }
 
@@ -35,7 +35,7 @@ int main(){
 
         // imprime o endereço na qual os dados da pessoa está alocado e os dados (nome e cpf)
         printf("\nend. Pessoa: %p\nNOME: %s\nCPF: %d\n", pessoa, pessoa->nome, pessoa->cpf);
-        alteraNome(&pessoa);
+        alteraNome(pessoa);
         // imprime novamente depois de alterar o nome
         printf("\nend. Pessoa: %p\nNOME: %s\nCPF: %d\n", pessoa, pessoa->nome, pessoa->cpf);
         //desalocando memoria (libera os espaço de memória alocado no malloc)
