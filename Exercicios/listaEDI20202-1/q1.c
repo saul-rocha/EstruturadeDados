@@ -3,13 +3,16 @@
 #include <time.h>
 
 
-//recebe uma matriz e a ordem da mesma também por referencia
-void preenche(int **mat,int i,int j,int *tam){
-    for(int  i=0; i < *tam;i++){
-        for(int  j=0; j < *tam;j++){
+//preenche uma matriz
+void preenche(int **mat,int i,int j,int tam){
+    if (i < tam){
+        if(j < tam){
             mat[i][j] = rand() % 10;//preenche a matriz com valores aleatoria entre 0 e 10
+            preenche(mat,i,j+1,tam);
         }
+        preenche(mat,i+1,0,tam);
     }
+    
 }
 
 //calculo do determinante de ordem 2
@@ -23,7 +26,6 @@ int ordem2(int **mat){
 
 int main(){
     int ordem;
-
 
     //ler a ordem da matriz
     do{
@@ -44,7 +46,7 @@ int main(){
         matriz[i] = malloc(ordem * sizeof(int));// aloca cada uma das linhas (vetores de oredem inteiros)
     }
     //preenche a matriz
-    preenche(matriz,&ordem);//passa o endereço da matriz e o endereço de sua ordem
+    preenche(matriz,0,0,ordem);//passa o endereço da matriz e o endereço de sua ordem
 
     for(int  i=0; i < ordem;i++){
         for(int  j=0; j < ordem;j++){
