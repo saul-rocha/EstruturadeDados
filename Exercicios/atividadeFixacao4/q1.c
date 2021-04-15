@@ -38,3 +38,37 @@ int main()
 */
 
 // MODIFICAÇÃO
+
+int binario(int nro,char bin[8])
+{
+    int i = 0; //valor a ser retornado
+    if (nro < 256)
+    {
+        if(nro / 2 > 0)
+        {
+            i = binario(nro/2,bin)+1; //recursaão com pendencia
+            bin[i] = (nro % 2) + 48; // pendencia
+            printf("bin[%d] = %c\n",i,bin[i]); // pendencia
+        }else{ // ultimo caso
+            bin[i] = (nro % 2) + 48; 
+            printf("bin[%d] = %c\n",i,bin[i]);
+        }
+    }
+    return (i); // retorna i
+}
+
+int main()
+{
+    int n, i;
+    char bin[9];
+    printf("n: ");
+    scanf("%d",&n);
+    if(n < 256)
+    {
+        i = binario(n,bin);
+        bin[i+1] = '\0';
+        printf("O número binario e: %s\n",bin);
+    }
+    else printf("O maior número possível com 8 dígitos é 255. \n");
+    return(0);
+}
