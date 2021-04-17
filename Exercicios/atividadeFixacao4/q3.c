@@ -1,36 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TAM 5
+#define TAM 3
 
 //QuickSort
+// separa o vetor em duas partições
 int partition(int vet[], int begin, int end){
-    int left, right, pivet, aux;
+    int left, right, key, aux;
 
-    left = begin;
-    right = end;
-    pivet = vet[begin];
-    while (left < right)
+    left = begin; // esquerda recebe o inicio do vetor
+    right = end; // direita recebe o final do vetor
+    key = vet[begin]; // pivô começa da posição inicial
+    while (left < right) // condição de parada
     {
-        while (vet[left]<= pivet)
+        while (vet[left]<= key)
         {
-            left++;
+            left++; // caso o valor do vetor na posição esquerda for menor ou igual ao pivô, a esqueda é iterada
         }
-        while (vet[right] > pivet)
+        while (vet[right] > key)
         {
-            right--;
+            right--; // caso o valor do vetor na posiçãodireita for maior que o pivô a direita e decrementada
         }
-        if(left < right){
+        // logo, o andamento do vetor ocorre nas duas direções
+        if(left < right){ // caso esquerda seja menor que a direita, é feita as trocas no vetor
             aux = vet[left];
             vet[left] = vet[right];
             vet[right] = vet[aux];
         }
         
     }
-    vet[begin] = vet[right];
-    vet[right]= pivet;
+    vet[begin] = vet[right]; // o vetor inicial recebe o valor do veotr na posição direita               
+    vet[right]= key;///e o vetor da direita agora é o pivô
 
-    return right;
+    return right; // retorna a nova key
     
 }
 //de forma geral o algoritmo quicksort particiona o vetor em duas partes de acordo com o pivô(um ponto de partida)
@@ -39,11 +41,11 @@ int partition(int vet[], int begin, int end){
 //recebe um vetor e as posições de inicio e fim
 
 int quicksort(int vet[], int begin, int end){
-    int pivet;
+    int key;
     if(end > begin){
-        pivet = partition(vet,begin,end);
-        quicksort(vet,begin,pivet-1);
-        quicksort(vet,pivet+1, end);
+        key = partition(vet,begin,end); // separa o vetor em duas partições (esquerda e direita)
+        quicksort(vet,begin,key-1); // chama a função para a partição esquerda
+        quicksort(vet,key+1, end); // chama a função para a partição direita
     }
 }
 
@@ -79,6 +81,7 @@ int main(){
     int vet1[TAM], vet2[TAM], vet3[TAM];
     int tam3=0;
 
+    //ler os vetores
     printf("Primeiro Vetor\n");
     for(int i=0;i<TAM;i++){
         scanf("%d", &vet1[i]);
@@ -89,11 +92,14 @@ int main(){
         scanf("%d", &vet2[j]);
     }
 
+    //ordena
     quicksort(vet1,0,TAM-1);
     quicksort(vet2,0,TAM-1);
 
+    //intersect
     intersection(vet1,vet2,vet3,0,0,TAM,TAM,&tam3);
 
+    //imprime
     for(int x=0; x < tam3;x++){
         printf("%d ", vet3[x]);
     }
