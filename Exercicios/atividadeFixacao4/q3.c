@@ -10,18 +10,17 @@ int partition(int vet[], int begin, int end){
 
     left = begin; // esquerda recebe o inicio do vetor
     right = end; // direita recebe o final do vetor
-    key = vet[begin]; // pivô começa da posição inicial
+    key = vet[begin]; // chave começa da posição inicial
     while (left < right) // condição de parada
     {
         while (vet[left]<= key)
         {
-            left++; // caso o valor do vetor na posição esquerda for menor ou igual ao pivô, a esqueda é iterada
+            left++; // caso o valor do vetor na posição esquerda for menor ou igual a chave, a esqueda é iterada
         }
         while (vet[right] > key)
         {
-            right--; // caso o valor do vetor na posiçãodireita for maior que o pivô a direita e decrementada
+            right--; // caso o valor do vetor na posiçãodireita for maior que a cheve, a direita é decrementada
         }
-        // logo, o andamento do vetor ocorre nas duas direções
         if(left < right){ // caso esquerda seja menor que a direita, é feita as trocas no vetor
             aux = vet[left];
             vet[left] = vet[right];
@@ -29,14 +28,14 @@ int partition(int vet[], int begin, int end){
         }
         
     }
-    vet[begin] = vet[right]; // o vetor inicial recebe o valor do veotr na posição direita               
-    vet[right]= key;///e o vetor da direita agora é o pivô
+    vet[begin] = vet[right]; // o vetor inicial recebe o valor do vetor na posição direita               
+    vet[right]= key;///e o vetor da direita agora é a chave
 
     return right; // retorna a nova key
     
 }
-//de forma geral o algoritmo quicksort particiona o vetor em duas partes de acordo com o pivô(um ponto de partida)
-// valores menores que o pivô sao alocados à esquerda e os maiores à direita
+//de forma geral o algoritmo quicksort particiona o vetor em duas partes de acordo com a chave(um ponto de referência)
+// valores menores que a chave sao colocados à esquerda e os maiores à direita
 
 //recebe um vetor e as posições de inicio e fim
 

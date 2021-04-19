@@ -26,18 +26,18 @@ int partition(struct Curso *c, int begin, int end){
 
     left = begin; // esquerda recebe o inicio do vetor
     right = end; // direita recebe o final do vetor
-    key = c[begin]; // pivô começa da posição inicial
+    key = c[begin]; // chave começa da posição inicial
     while (left < right) // condição de parada
     {
         while (c[left].id_curso <= key.id_curso)
         {
-            left++; // caso o valor do vetor na posição esquerda for menor ou igual ao pivô, a esqueda é iterada
+            left++; // caso o valor do vetor na posição esquerda for menor ou igual a chave, a esqueda é iterada
         }
         while (c[right].id_curso > key.id_curso)
         {
-            right--; // caso o valor do vetor na posiçãodireita for maior que o pivô a direita e decrementada
+            right--; // caso o valor do vetor na posição direita for maior que a chavea direita e decrementada
         }
-        // logo, o andamento do vetor ocorre nas duas direções
+        
         if(left < right){ // caso esquerda seja menor que a direita, é feita as trocas no vetor
             aux = c[left];
             c[left] = c[right];
@@ -45,23 +45,23 @@ int partition(struct Curso *c, int begin, int end){
         }
         
     }
-    c[begin] = c[right]; // o vetor inicial recebe o valor do veotr na posição direita               
-    c[right] = key;///e o vetor da direita agora é o pivô
+    c[begin] = c[right]; // a posição do vetor inicial recebe o valor do vetor na posição direita               
+    c[right] = key;///e o vetor da direita agora é a chave
 
     return right;
     
 }
 
-//de forma geral o algoritmo quicksort particiona o vetor em duas partes de acordo com o pivô(um ponto de partida)
-// valores menores que o pivô sao alocados à esquerda e os maiores à direita
+//de forma geral o algoritmo quicksort particiona o vetor em duas partes de acordo com uma chave(um ponto de referencia)
+// valores menores que a chave sao colocados à esquerda e os maiores à direita
 
 //recebe um vetor e as posições de inicio e fim
 int quicksort(struct Curso *c, int begin, int end){
     int key;
     if(end > begin){
         key = partition(c,begin,end); // separa o vetor em duas partições (esquerda e direita)
-        quicksort(c,begin,key-1); // chama a função para a partição esquerda
-        quicksort(c,key+1, end); // chama a função para a partição direita
+        quicksort(c,begin,key-1); // chama a função para ordenar a partição esquerda
+        quicksort(c,key+1, end); // chama a função para ordenar a partição direita
     }
 }
 
@@ -117,7 +117,22 @@ char ler_disciplina(struct Disciplina *d, struct Curso *c, int i, int tamd, int 
     }
 }
 
-
+// tem como parametros o vetor de curso, um int maior iniciando com o periodo da primeira posição do vetor
+// uma vetor de char para receber o nome curso com mais periodos e i e tam para representar as posições de
+// inicio e fim do vetor
+void mais_periodos(struct Curso *c,int maior, char nome[],int i, int tam){
+    if (i < tam){ // condição de parada
+        if(maior < c[i].periodos){
+            mais_periodos(c,c[i].periodos,nome, i+1, tam);// chamma recursivamente
+            strcpy(nome, c[i].nome); // pendencia
+            // a pendencia irá ser sempre o primeiro valor encontrado maior que o primeiro
+            // e é aqui onde não está tendo a lógica para o funcionamento correto da função
+        }
+        else{// caso o valor nao seja maior que o maior apenas itera o valor de i
+            mais_periodos(c,maior,nome, i+1, tam);
+        }
+    }
+}
 
 
 int qtd_disciplinas(struct Disciplina *d,int id_curso, int i, int tam){
@@ -147,7 +162,7 @@ int qtd_disc_periodo(struct Disciplina *d, int id_curso, int periodo, int i, int
 
 int main(){
     int tamc, tamd, qtd_dis, id_c,per_c;
-    char nome;
+    char nome[100];
     struct Curso *cursos;
     struct Disciplina *disciplinas;
 
@@ -171,7 +186,8 @@ int main(){
         printf("id_curso: %d\ncurso: %s\nperiodos: %d\n----------------\n", cursos[i].id_curso,cursos[i].nome,cursos[i].periodos);
     }
     //nome do curso com mais periodos
-    
+    mais_periodos(cursos,0,nome, cursos[0].periodos, tamc);
+    printf("mais periodos: %s\n", nome);
     //qtd de disciplinas de um curso
     printf("id do curso: ");
     scanf("%d", &id_c);
