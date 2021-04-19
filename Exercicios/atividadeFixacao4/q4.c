@@ -89,7 +89,7 @@ int existe_curso(struct Curso *c, int i, int id, int tam){
     return 0;
 }
 
-void ler_disciplina(struct Disciplina *d, struct Curso *c, int i, int tamd, int tamc){
+char ler_disciplina(struct Disciplina *d, struct Curso *c, int i, int tamd, int tamc){
     int valid = 0;
     if (i < tamd){
         printf("Codigo da Disciplina: ");
@@ -118,9 +118,7 @@ void ler_disciplina(struct Disciplina *d, struct Curso *c, int i, int tamd, int 
 }
 
 
-int mais_periodos(struct Curso *c,char *nome,int i, int tam){
-    
-}
+
 
 int qtd_disciplinas(struct Disciplina *d,int id_curso, int i, int tam){
     int qtd = 0;
@@ -149,7 +147,7 @@ int qtd_disc_periodo(struct Disciplina *d, int id_curso, int periodo, int i, int
 
 int main(){
     int tamc, tamd, qtd_dis, id_c,per_c;
-    char *nome;
+    char nome;
     struct Curso *cursos;
     struct Disciplina *disciplinas;
 
@@ -173,9 +171,7 @@ int main(){
         printf("id_curso: %d\ncurso: %s\nperiodos: %d\n----------------\n", cursos[i].id_curso,cursos[i].nome,cursos[i].periodos);
     }
     //nome do curso com mais periodos
-    mais_periodos(cursos ,nome, 0, tamc);
-    printf("mais periodos: %s\n", nome);
-
+    
     //qtd de disciplinas de um curso
     printf("id do curso: ");
     scanf("%d", &id_c);

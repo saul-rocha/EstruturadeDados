@@ -29,7 +29,7 @@ int main()
     if(n < 256)
     {
         binario(n,&i,bin);
-        bin[i+1] = '\0';
+        bin[i] = '\0';
         printf("O número binario e: %s\n",bin);
     }
     else printf("O maior número possível com 8 dígitos é 255. \n");
@@ -66,8 +66,8 @@ int main()
     if(n < 256)
     {
         i = binario(n,bin);
-        bin[i+1] = '\0';
-        printf("O número binario e: %s\n",bin);
+        bin[i] = '\0';
+        printf("O número binario e: %s\n", bin);
     }
     else printf("O maior número possível com 8 dígitos é 255. \n");
     return(0);
