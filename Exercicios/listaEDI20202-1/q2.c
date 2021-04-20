@@ -19,18 +19,6 @@ void lerMatriz(char m[TAM][TAM][100],int i,int j, int tami,int tamj){
 
 }
 
-void quicksort(char m[TAM][TAM][100],char aux[100],int inicioi, int inicioj, int fimi, int fimj,int i){
-    int x1,x2,y1,y2;
-    if (m[inicioi][inicioj][i] > m[fimi][fimj][i]){
-        aux = m[inicioi][inicioj][i];
-        x1 = inicioi;
-        x2 = inicioj;
-        y1 = fimi;
-        y2 = fimj;
-        
-    }
-}
-
 
 int menu(){
     int opcao;

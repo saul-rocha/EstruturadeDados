@@ -7,7 +7,7 @@
 void preenche(int **mat,int i,int j,int tam){
     if (i < tam){
         if(j < tam){
-            mat[i][j] = rand() % 10;//preenche a matriz com valores aleatoria entre 0 e 10
+            mat[i][j] =  rand() % 10;//preenche a matriz com valores aleatoria entre 0 e 9
             preenche(mat,i,j+1,tam);
         }
         preenche(mat,i+1,0,tam);
@@ -15,17 +15,58 @@ void preenche(int **mat,int i,int j,int tam){
     
 }
 
-//calculo do determinante de ordem 2
-//até a gora só sei como passar  a matriz por parametro
-int ordem2(int **mat){
+//calculo do determinante pelo teorema de laplace,
+//O teorema de Laplace utiliza uma expansão em cofatores para realizar o cálculo de determinantes. 
 
+int laplace(int **mat, int tam){
+    int det = 0,i, i1,j1, j1_aux, i1_aux, **mat_aux, cofator;
+    //caso matriz de ordem 1
+    if(tam == 1){
 
-    
+        det = mat[0][0];
+
+    }else if(i < tam)//condição de parada(fim da matriz)
+    {
+        for(i=0;i<tam;i++)// percorre cada linha da matriz
+        {
+        //seleciona a primeira linha para efetuar o calculo dos cofatores
+        // e ignora quando for igual a zero pois o produto seria 0 e não precisa calcular
+            if(mat[0][i] != 0){
+                i1_aux = 0;
+                j1_aux = 0;
+                //cria submatrizes matrizes 
+                mat_aux = malloc(tam * sizeof(int));// aloca um vetor de ordem ponteiros para linhas
+                for(int i=0;i < tam;i++){
+                    mat_aux[i] = malloc(tam * sizeof(int));// aloca cada uma das linhas
+                }
+                //gera submatriz para calculo dos cofatores
+                for(i1 = 1; i1 < tam; i1++){
+                    for(j1 = 0; j1 < tam; j1++){
+                        if(j1 != i){
+                            mat_aux[i1_aux][j1_aux] = mat[i1][j1];
+                            j1_aux++;
+                        }
+                    }
+                    i1_aux++;
+                    j1_aux = 0;
+                }
+                // a condição do cofator irá semar é se posição da linha dividido por 2 tem o resto 0
+                // caso contrario irá subtrair(é passo como negativo) 
+                cofator = (i % 2 == 0) ? mat[0][i] : -mat[0][i];
+                // o determinte é a soma  entre cada elemento multiplicado pelo seu cofator
+                det = det + cofator * laplace(mat_aux, tam-1); // ou seja, a cada recursão soma o determinante ao cofator multiplicando
+                // com a proximo cofator
+
+                free(mat_aux);// ao final de toda a recursão libera a matriz auxiliar da pilha pendente           
+            }
+        }
+    }
+    return det;
 }
 
 
 int main(){
-    int ordem;
+    int ordem, dets, **matriz;
 
     //ler a ordem da matriz
     do{
@@ -41,7 +82,7 @@ int main(){
     
     //aloca a matriz dinamicamente
     
-    int **matriz = malloc(ordem * sizeof(int));// aloca um vetor de ordem ponteiros para linhas
+    matriz = malloc(ordem * sizeof(int));// aloca um vetor de ordem ponteiros para linhas
     for(int i=0;i < ordem;i++){
         matriz[i] = malloc(ordem * sizeof(int));// aloca cada uma das linhas (vetores de oredem inteiros)
     }
@@ -54,6 +95,9 @@ int main(){
         }
         printf("\n");
     }
+
+    dets = laplace(matriz,ordem);
+    printf("determinante = %d\n", dets);
 
 
     free(matriz);

@@ -117,19 +117,15 @@ char ler_disciplina(struct Disciplina *d, struct Curso *c, int i, int tamd, int 
     }
 }
 
-// tem como parametros o vetor de curso, um int maior iniciando com o periodo da primeira posição do vetor
-// uma vetor de char para receber o nome curso com mais periodos e i e tam para representar as posições de
-// inicio e fim do vetor
-void mais_periodos(struct Curso *c,int maior, char nome[],int i, int tam){
+// vetor de cursos, maior nome e maior periodo vetor de char resultante, i e tam para percorrer o vetor
+void more_periods(struct Curso *c, char maiornome[100], int maiorperiodo, char res[100], int i, int tam){
     if (i < tam){ // condição de parada
-        if(maior < c[i].periodos){
-            mais_periodos(c,c[i].periodos,nome, i+1, tam);// chamma recursivamente
-            strcpy(nome, c[i].nome); // pendencia
-            // a pendencia irá ser sempre o primeiro valor encontrado maior que o primeiro
-            // e é aqui onde não está tendo a lógica para o funcionamento correto da função
+        if (maiorperiodo < c[i].periodos){
+            strcpy(res,c[i].nome); // sem pendencia
+            more_periods(c,c[i].nome,c[i].periodos,res,i+1,tam); // chama recursivamente repassando os novos valores de comparação
         }
-        else{// caso o valor nao seja maior que o maior apenas itera o valor de i
-            mais_periodos(c,maior,nome, i+1, tam);
+        else{
+            more_periods(c,maiornome,maiorperiodo,res,i+1,tam); // chama recursivamente iterando o i
         }
     }
 }
@@ -185,9 +181,11 @@ int main(){
     for(int i=0; i < tamc;i++){
         printf("id_curso: %d\ncurso: %s\nperiodos: %d\n----------------\n", cursos[i].id_curso,cursos[i].nome,cursos[i].periodos);
     }
+
     //nome do curso com mais periodos
-    mais_periodos(cursos,0,nome, cursos[0].periodos, tamc);
+    more_periods(cursos,cursos[0].nome,cursos[0].periodos,nome,0,tamc);
     printf("mais periodos: %s\n", nome);
+
     //qtd de disciplinas de um curso
     printf("id do curso: ");
     scanf("%d", &id_c);
