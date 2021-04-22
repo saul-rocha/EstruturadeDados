@@ -68,6 +68,7 @@ int main()
         i = binario(n,bin);
         bin[i] = '\0';
         printf("O número binario e: %s\n", bin);
+        printf("%d\n", i);
     }
     else printf("O maior número possível com 8 dígitos é 255. \n");
     return(0);

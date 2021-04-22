@@ -20,7 +20,7 @@ struct Disciplina{
 
 //QuickSort
 // separa o vetor em duas partições
-int partition(struct Curso *c, int begin, int end){
+int partition(struct Curso c[], int begin, int end){
     int left, right;
     struct Curso key, aux;
 
@@ -29,7 +29,7 @@ int partition(struct Curso *c, int begin, int end){
     key = c[begin]; // chave começa da posição inicial
     while (left < right) // condição de parada
     {
-        while (c[left].id_curso <= key.id_curso)
+        while (c[left].id_curso < key.id_curso)
         {
             left++; // caso o valor do vetor na posição esquerda for menor ou igual a chave, a esqueda é iterada
         }
@@ -45,8 +45,6 @@ int partition(struct Curso *c, int begin, int end){
         }
         
     }
-    c[begin] = c[right]; // a posição do vetor inicial recebe o valor do vetor na posição direita               
-    c[right] = key;///e o vetor da direita agora é a chave
 
     return right;
     
@@ -56,17 +54,59 @@ int partition(struct Curso *c, int begin, int end){
 // valores menores que a chave sao colocados à esquerda e os maiores à direita
 
 //recebe um vetor e as posições de inicio e fim
-int quicksort(struct Curso *c, int begin, int end){
+int quicksort_curso(struct Curso c[], int begin, int end){
     int key;
     if(end > begin){
         key = partition(c,begin,end); // separa o vetor em duas partições (esquerda e direita)
-        quicksort(c,begin,key-1); // chama a função para ordenar a partição esquerda
-        quicksort(c,key+1, end); // chama a função para ordenar a partição direita
+        quicksort_curso(c,begin,key-1); // chama a função para ordenar a partição esquerda
+        quicksort_curso(c,key+1, end); // chama a função para ordenar a partição direita
+    }
+}
+// separa o vetor em duas partições
+int partition_disc(struct Disciplina d[], int begin, int end){
+    int left, right;
+    struct Disciplina key, aux;
+
+    left = begin; // esquerda recebe o inicio do vetor
+    right = end; // direita recebe o final do vetor
+    key = d[end]; // chave começa da posição inicial
+    while (left < right) // condição de parada
+    {
+        while (d[left].id_disciplina < key.id_curso)
+        {
+            left++; // caso o valor do vetor na posição esquerda for menor ou igual a chave, a esqueda é iterada
+        }
+        while (d[right].id_curso > key.id_curso)
+        {
+            right--; // caso o valor do vetor na posição direita for maior que a chavea direita e decrementada
+        }
+        
+        if(left < right){ // caso esquerda seja menor que a direita, é feita as trocas no vetor
+            aux = d[left];
+            d[left] = d[right];
+            d[right] = aux;
+        }
+        
+    }
+
+    return right;
+    
+}
+
+//de forma geral o algoritmo quicksort particiona o vetor em duas partes de acordo com uma chave(um ponto de referencia)
+// valores menores que a chave sao colocados à esquerda e os maiores à direita
+
+//recebe um vetor e as posições de inicio e fim
+int quicksort_disc(struct Disciplina d[], int begin, int end){
+    int key;
+    if(end > begin){
+        key = partition_disc(d,begin,end); // separa o vetor em duas partições (esquerda e direita)
+        quicksort_disc(d,begin,key-1); // chama a função para ordenar a partição esquerda
+        quicksort_disc(d,key+1, end); // chama a função para ordenar a partição direita
     }
 }
 
-
-void ler_curso(struct Curso *c,int i, int tam){
+void ler_curso(struct Curso c[],int i, int tam){
     if (i < tam){
         printf("Codigo do Curso: ");
         scanf("%d", &c[i].id_curso);
@@ -79,7 +119,7 @@ void ler_curso(struct Curso *c,int i, int tam){
     }
 }
 
-int existe_curso(struct Curso *c, int i, int id, int tam){
+int existe_curso(struct Curso c[], int i, int id, int tam){
     if (i < tam){
         if (c[i].id_curso == id){
             return 1;
@@ -89,7 +129,7 @@ int existe_curso(struct Curso *c, int i, int id, int tam){
     return 0;
 }
 
-char ler_disciplina(struct Disciplina *d, struct Curso *c, int i, int tamd, int tamc){
+char ler_disciplina(struct Disciplina d[], struct Curso c[], int i, int tamd, int tamc){
     int valid = 0;
     if (i < tamd){
         printf("Codigo da Disciplina: ");
@@ -118,20 +158,21 @@ char ler_disciplina(struct Disciplina *d, struct Curso *c, int i, int tamd, int 
 }
 
 // vetor de cursos, maior nome e maior periodo vetor de char resultante, i e tam para percorrer o vetor
-void more_periods(struct Curso *c, char maiornome[100], int maiorperiodo, char res[100], int i, int tam){
+char *more_periods(struct Curso c[], char maiornome[], int maiorperiodo, int i, int tam){
+    char res[100];
     if (i < tam){ // condição de parada
         if (maiorperiodo < c[i].periodos){
-            strcpy(res,c[i].nome); // sem pendencia
-            more_periods(c,c[i].nome,c[i].periodos,res,i+1,tam); // chama recursivamente repassando os novos valores de comparação
+            strcpy(res,more_periods(c,c[i].nome,c[i].periodos,i+1,tam)); 
         }
         else{
-            more_periods(c,maiornome,maiorperiodo,res,i+1,tam); // chama recursivamente iterando o i
+            strcpy(res,more_periods(c,maiornome,maiorperiodo,i+1,tam)); // chama recursivamente iterando o i
         }
     }
+    return res;
 }
 
 
-int qtd_disciplinas(struct Disciplina *d,int id_curso, int i, int tam){
+int qtd_disciplinas(struct Disciplina d[],int id_curso, int i, int tam){
     int qtd = 0;
     if(i < tam){
         if(d[i].id_curso == id_curso){
@@ -143,7 +184,7 @@ int qtd_disciplinas(struct Disciplina *d,int id_curso, int i, int tam){
 }
 
 
-int qtd_disc_periodo(struct Disciplina *d, int id_curso, int periodo, int i, int tam){
+int qtd_disc_periodo(struct Disciplina d[], int id_curso, int periodo, int i, int tam){
     
     int qtd_d = 0;
     if(i < tam){
@@ -175,15 +216,16 @@ int main(){
     ler_disciplina(disciplinas, cursos, 0, tamd, tamc);
 
     //ordena curso
-    quicksort(cursos,0,tamc-1);//ordena apenas vetores acima de 5 nao sei por que
-
+    quicksort_curso(cursos,0,tamc-1);//ordena apenas vetores acima de 5 nao sei por que
+    //ordena disciplina
+    quicksort_disc(disciplinas,0,tamd-1);
     //imprime
     for(int i=0; i < tamc;i++){
         printf("id_curso: %d\ncurso: %s\nperiodos: %d\n----------------\n", cursos[i].id_curso,cursos[i].nome,cursos[i].periodos);
     }
 
     //nome do curso com mais periodos
-    more_periods(cursos,cursos[0].nome,cursos[0].periodos,nome,0,tamc);
+    strcpy(nome,more_periods(cursos,cursos[0].nome,cursos[0].periodos,0,tamc));
     printf("mais periodos: %s\n", nome);
 
     //qtd de disciplinas de um curso

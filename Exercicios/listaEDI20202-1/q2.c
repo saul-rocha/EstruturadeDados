@@ -19,11 +19,36 @@ void lerMatriz(char m[TAM][TAM][100],int i,int j, int tami,int tamj){
 
 }
 
+//verifica se um char é maiusculo
+int maiuscula(char c){
+    int i=0;
+    if (c > 64 && c < 91){
+        i=1;
+    }
+    return i;
+}
+
+//converte a string pra minusculo
+void lower_string(char s[], char slower[]){
+    for(int i=0; i < strlen(s); i++){
+        slower[i] = s[i] + 32;
+    }
+}
+
+
+void vetor(char mat[TAM][TAM][100], char vet[TAM][100], int i,int j, int tam){
+    if (i < tam){
+        strcpy(vet[i],mat[i][j]);
+        i+=1;
+        vetor(mat,vet,i,j,tam);
+    }
+}
 
 int menu(){
     int opcao;
 
     printf("1- Ler Matriz\n2- Ordenar Colunas\n3- Mostar Ordenada\n4- Mostar Desordenada\n5- Quantidade de Digitos e maiusculas\n6- Quantidade que iniciam com Consoantes\n");
+
     printf("Digite um opcao: ");
     scanf("%d",&opcao);
 
@@ -31,33 +56,40 @@ int menu(){
 }
 
 
+
 int main(){
     
     int op;
 
-    char mat[TAM][TAM][100];
-
-    op = menu();
-    while (op < 6 && op > 0)
+    char mat[TAM][TAM][100], col[TAM][100];
+    char b[100];
+    do 
     {
     
+        op = menu();
         switch(op)
         {
             case 1:
                 lerMatriz(mat,0,0,TAM,TAM);
-                printf(" ");
+                printf("Lido!\n");
                 break;
             case 2:
+                lower_string(mat[0][0],b);
+                printf("%s\n", b);
+                break;
+
+            case 3:
                 for(int i=0;i <TAM;i++){
 
                     for(int j=0;j<TAM;j++){
-                        printf("string[%d][%d]: %s\n",i, j, mat[i][j]);
+                        printf("string[%d][%d]: %s ",i, j, mat[i][j]);
                     }
-
+                    printf("\n");
                 }
+                break;
 
         }
-        op = menu();
-    }
+    }while(op < 7 && op > 0);
+    printf("Obrigado!\n");
     return(0);
 }
