@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -34,6 +35,21 @@ void lower_string(char s, char slower){
 }
 
 
+// verifica se um char é vogal
+int is_vogal(char c){
+    int res;
+    if(c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u'){
+        res = 1;
+    }else if (c == 'A' || c == 'E' || c == 'I' || c == 'O' || c == 'U'){
+            res = 1;
+        }else{
+            res = 0;
+        }
+    return res;
+}
+
+
+// copia uma coluna da matriz e copia para um vetor
 void vetor(char mat[TAM][TAM][100], char vet[TAM][100], int i,int j, int tam){
     if (i < tam){
         strcpy(vet[i],mat[i][j]);
@@ -116,7 +132,7 @@ int partition(char vet[][100], int begin, int end){
 // valores menores que a chave sao colocados à esquerda e os maiores à direita
 
 //recebe um vetor e as posições de inicio e fim
-char quicksort(char vet[][100], int begin, int end){
+void quicksort(char vet[][100], int begin, int end){
     int key;
     if(end > begin){
         key = partition(vet,begin,end); // separa o vetor em duas partições (esquerda e direita)
@@ -125,10 +141,92 @@ char quicksort(char vet[][100], int begin, int end){
     }
 }
 
+//ordena todas as colunas
+void sort_mat(char mat[TAM][TAM][100],char mat1[TAM][TAM][100], char vet[][100],int coluna, int tam){
+    int j;
+    if(coluna < tam){
+        vetor(mat,vet,0,coluna,tam);
+        quicksort(vet,0,tam-1);
+        for(j=0;j<tam;j++){
+            strcpy(mat1[j][coluna],vet[j]);
+        }
+        coluna += 1;
+        sort_mat(mat,mat1,vet,coluna,tam);
+    }
+}
+//mostra colunas desordenadas
+void mostrar_unsort(char mat[TAM][TAM][100], int tam){
+    for(int i = 0; i < tam;i++){
+        printf("Coluna %d Desordenada\n", i);
+        for(int j = 0; j < tam;j++){
+            printf("%s \n", mat[j][i]);
+        }
+        printf("\n--------\n");
+    }
+}
+
+//mostra colunas ordenadas
+void mostrar_sort(char mat[TAM][TAM][100], int tam){
+    for(int i = 0; i < tam;i++){
+        printf("Coluna %d Ordenada\n", i);
+        for(int j = 0; j < tam;j++){
+            printf("%s \n", mat[j][i]);
+        }
+        printf("\n--------\n");
+    }
+}
+
+//qts de digitos em uma string
+int qtd_digit(char c[100], int i, int tam){
+    int qtd=0;
+    if (i < tam){
+        if(isdigit(c[i])){
+            i++;
+            qtd = qtd_digit(c,i,tam) + 1;
+        }else{
+            i++;
+            qtd = qtd_digit(c,i,tam) + 0;
+        } 
+    }
+    return qtd;
+}
+//numero de maiusculas em uma string
+int qtd_maius(char c[100], int i, int tam){
+    int qtd=0;
+    if (i < tam){
+        if(maiuscula(c[i])){
+            i++;
+            qtd = qtd_maius(c,i,tam) + 1;
+        }else{
+            i++;
+            qtd = qtd_maius(c,i,tam) + 0;
+        } 
+    }
+    return qtd;
+}
+
+//qtd de string numa coluna que inicia com Consoante
+int conso_init(char c[TAM][TAM][100], int coluna, int i, int tam){
+    int qtd=0;
+    if(i < tam){
+        // se nao é volgal é consoante
+        if(!is_vogal(c[i][coluna][0])){
+            i++;
+            qtd = conso_init(c,coluna,i,tam) + 1;
+        }else{
+            i++;
+            qtd = conso_init(c,coluna,i,tam) + 0;
+        }
+    }
+
+    return qtd;
+
+}
+
 int menu(){
     int opcao;
 
-    printf("1- Ler Matriz\n2- Ordenar Colunas\n3- Mostrar Ordenada\n4- Mostrar Desordenada\n5- Quantidade de Digitos e maiusculas\n6- Quantidade que iniciam com Consoantes\n");
+    printf("1- Ler Matriz\n2- Ordenar Colunas\n3- Mostrar Desordenada\n4- Mostrar Ordenada\n5- Quantidade de Digitos e maiusculas\n6- Quantidade que iniciam com Consoantes\n0- Sair");
 
     printf("Digite um opcao: ");
     scanf("%d",&opcao);
@@ -139,9 +237,9 @@ int menu(){
 
 int main(){
     
-    int op,j,coluna;
+    int op,row,colum, tam, digit, maius,conso;
 
-    char mat[TAM][TAM][100], col[TAM][100];
+    char mat[TAM][TAM][100], mat1[TAM][TAM][100], col[TAM][100];
     char b[100];
 
     do 
@@ -155,28 +253,37 @@ int main(){
                 printf("Lido!\n");
                 break;
             case 2:
-                for(coluna=0;coluna<TAM;coluna++){
-                    vetor(mat,col,0,coluna,TAM);
-                    //printf("desordenadao\n");
-                    //for(j=0;j<TAM;j++){
-                    //    printf("string: %s \n",col[j]);
-                    //}
-                    quicksort(col,0,TAM-1);
-                    printf("Colunas Ordenadas\n");
-                    for(j=0;j<TAM;j++){
-                        printf("coluna[%d]: %s \n",coluna,col[j]);
-                    }
-                }
+                sort_mat(mat, mat1, col, 0, TAM);
+                printf("Ordenado!\n");
                 break;
 
             case 3:
-                for(int i=0;i <TAM;i++){
+                mostrar_unsort(mat, TAM);
+                break;
+            
+            case 4:
+                mostrar_sort(mat1, TAM);
+                break;
+            case 5:
+                printf("linha: ");
+                scanf("%d", &row);
+                printf("coluna: ");
+                scanf("%d", &colum);
 
-                    for(int j=0;j<TAM;j++){
-                        printf("string[%d][%d]: %s ",i, j, mat[i][j]);
-                    }
-                    printf("\n");
-                }
+                tam = strlen(mat1[row][colum]);
+
+                digit = qtd_digit(mat1[row][colum],0, tam);
+                maius = qtd_maius(mat1[row][colum],0, tam);
+                printf("%d Digitos\n", digit);
+                printf("%d Maiusculas\n", maius);
+
+                break;
+
+            case 6:
+                printf("coluna: ");
+                scanf("%d", &colum);
+                conso = conso_init(mat1, colum, 0, TAM);
+                printf("%d Iniciam com Consoante\n", conso);
                 break;
 
         }
