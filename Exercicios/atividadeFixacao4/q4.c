@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define TAM 5
 
 struct Curso{
     int id_curso;
@@ -26,12 +27,12 @@ int partition(struct Curso c[], int begin, int end){
 
     left = begin; // esquerda recebe o inicio do vetor
     right = end; // direita recebe o final do vetor
-    key = c[begin]; // chave começa da posição inicial
+    key = c[begin]; // chave começa da posição inicial (esquerda)
     while (left < right) // condição de parada
     {
         while (c[left].id_curso < key.id_curso)
         {
-            left++; // caso o valor do vetor na posição esquerda for menor ou igual a chave, a esqueda é iterada
+            left++; // caso o valor do vetor na posição esquerda for menor que a chave, a esqueda é iterada
         }
         while (c[right].id_curso > key.id_curso)
         {
@@ -54,14 +55,16 @@ int partition(struct Curso c[], int begin, int end){
 // valores menores que a chave sao colocados à esquerda e os maiores à direita
 
 //recebe um vetor e as posições de inicio e fim
-int quicksort_curso(struct Curso c[], int begin, int end){
+void quicksort_curso(struct Curso c[], int begin, int end){
     int key;
     if(end > begin){
         key = partition(c,begin,end); // separa o vetor em duas partições (esquerda e direita)
         quicksort_curso(c,begin,key-1); // chama a função para ordenar a partição esquerda
-        quicksort_curso(c,key+1, end); // chama a função para ordenar a partição direita
+        quicksort_curso(c,key+1, end); // chama a função para ordenar a partição direita como pendencia da primeira chamada
     }
 }
+
+//IDEM ANTERIOR
 // separa o vetor em duas partições
 int partition_disc(struct Disciplina d[], int begin, int end){
     int left, right;
@@ -97,7 +100,7 @@ int partition_disc(struct Disciplina d[], int begin, int end){
 // valores menores que a chave sao colocados à esquerda e os maiores à direita
 
 //recebe um vetor e as posições de inicio e fim
-int quicksort_disc(struct Disciplina d[], int begin, int end){
+void quicksort_disc(struct Disciplina d[], int begin, int end){
     int key;
     if(end > begin){
         key = partition_disc(d,begin,end); // separa o vetor em duas partições (esquerda e direita)
@@ -106,8 +109,10 @@ int quicksort_disc(struct Disciplina d[], int begin, int end){
     }
 }
 
-void ler_curso(struct Curso c[],int i, int tam){
-    if (i < tam){
+
+// ler um curso
+void ler_curso(struct Curso c[],int i){
+
         printf("Codigo do Curso: ");
         scanf("%d", &c[i].id_curso);
         printf("Nome do Curso: ");
@@ -115,75 +120,78 @@ void ler_curso(struct Curso c[],int i, int tam){
         printf("Quantidade de Periodos: ");
         scanf("%d", &c[i].periodos);
 
-        ler_curso(c,i+1,tam);
-    }
 }
 
+//verifica se um curso existe, recebe 
 int existe_curso(struct Curso c[], int i, int id, int tam){
-    if (i < tam){
+    int res =0;
+    if (i < tam){// condição de parada
         if (c[i].id_curso == id){
-            return 1;
+            res = 1;
+        }else{
+            res = existe_curso(c,i+1,id,tam); // chama recursivamente sem pendencia
         }
-        existe_curso(c,i+1,id,tam);
     }
-    return 0;
+    return res; // retorna 1 se encontrar e 0 caso contrario
 }
 
-char ler_disciplina(struct Disciplina d[], struct Curso c[], int i, int tamd, int tamc){
+
+// ler uma disciplina
+void ler_disciplina(struct Disciplina d[], struct Curso c[], int tamd, int tamc){
     int valid = 0;
-    if (i < tamd){
-        printf("Codigo da Disciplina: ");
-        scanf("%d", &d[i].id_disciplina);
+    
+    printf("Codigo da Disciplina: ");
+    scanf("%d", &d[tamd].id_disciplina);
 
-        while (valid == 0)
-        {
-            printf("Codigo do Curso: ");
-            scanf("%d", &d[i].id_curso);
-            valid = existe_curso(c,0,d[i].id_curso,tamc);
-            if(valid == 0){
-                printf("Digite um código de curso válido!\n");
-            }
+    while (valid == 0)
+    {
+        printf("Codigo do Curso: ");
+        scanf("%d", &d[tamd].id_curso);
+        valid = existe_curso(c,0,d[tamd].id_curso,tamc); // chama a função para verificar se o curso existe
+        if(valid == 0){
+            printf("Digite um código de curso válido!\n");
         }
-        
-        
-        printf("Nome da Disciplina: ");
-        scanf("%s", d[i].nome);
-        printf("Periodo: ");
-        scanf("%d", &d[i].periodo);
-        printf("Carga Horaria: ");
-        scanf("%d", &d[i].carga_horaria);
-
-        ler_disciplina(d,c,i+1,tamd,tamc);
     }
+    
+    
+    printf("Nome da Disciplina: ");
+    scanf("%s", d[tamd].nome);
+    printf("Periodo: ");
+    scanf("%d", &d[tamd].periodo);
+    printf("Carga Horaria: ");
+    scanf("%d", &d[tamd].carga_horaria);
+
+    
 }
 
-// vetor de cursos, maior nome e maior periodo vetor de char resultante, i e tam para percorrer o vetor
-char *more_periods(struct Curso c[], char maiornome[], int maiorperiodo, int i, int tam){
-    char res[100];
+// recebe um vetor de cursos como parametro, uma string que izniciará na main como a primeira posição do vetoro de alunos.nome
+// o maior periodo que recebe a primeira posiçãio do vetor na main,
+// e o indice i para percorrer o vetor e o tamanho do vetor de curso
+void more_periods(struct Curso c[], char maiornome[], int *maiorperiodo, int i, int tam){
+    
     if (i < tam){ // condição de parada
-        if (maiorperiodo < c[i].periodos){
-            strcpy(res,more_periods(c,c[i].nome,c[i].periodos,i+1,tam)); 
+    more_periods(c,maiornome,maiorperiodo,i+1,tam);// chama a recursão até cheagar ao final do vetor
+        if (*maiorperiodo < c[i].periodos){// resolve a pendecia após percorrer o vetor
+            strcpy(maiornome,c[i].nome); // caso o curso na posição i tenha mais periodos que a anterior
+            *maiorperiodo = c[i].periodos;  // o conteúdo do maior periodo é alterado recebendo o maior
         }
-        else{
-            strcpy(res,more_periods(c,maiornome,maiorperiodo,i+1,tam)); // chama recursivamente iterando o i
-        }
-    }
-    return res;
+    }    
 }
 
-
+//recebe um vetor de disciplinas, o id de um curso, i para percorrer o curso e o tamanho do vetor 
 int qtd_disciplinas(struct Disciplina d[],int id_curso, int i, int tam){
-    int qtd = 0;
+    int qtd = 0; // retornará a quantidade de disciplinas
     if(i < tam){
-        if(d[i].id_curso == id_curso){
-            qtd = qtd_disciplinas(d,id_curso,i+1,tam) + 1;
+        if(d[i].id_curso == id_curso){ // virifica o id do curso
+            qtd = qtd_disciplinas(d,id_curso,i+1,tam) + 1; // se o id do curso da discplina for igual ao id passado
+            // qtd é iterado pendentemente
         }
-        qtd_disciplinas(d,id_curso,i+1,tam);
+        qtd_disciplinas(d,id_curso,i+1,tam);// caso contraio, apenas passa para o proximo
     }
-    return qtd;
+    return qtd; // retorna a quantidade total
 }
 
-
+// idem anterior, tendo agora o periodo adiconado como parametro e tambem entra para verificação
 int qtd_disc_periodo(struct Disciplina d[], int id_curso, int periodo, int i, int tam){
     
     int qtd_d = 0;
@@ -197,56 +205,101 @@ int qtd_disc_periodo(struct Disciplina d[], int id_curso, int periodo, int i, in
     return qtd_d;
 }
 
+// menu de opções
+int menu(){
+    int opcao;
+
+    printf("1- Ler Curso\n2- Ler disciplina\n3- Ordenar Cursos\n4- Ordenar Discuplinas\n5- Curso Com Mais Periodos\n6- Imprimir Cursos\n7- Quantidade de Disciplinas Em Um Curso\n8- Quantidade de Disciplinas Em Um Periodo Do Curso\n0- Sair\n");
+
+    printf("Digite um opcao: ");
+    scanf("%d",&opcao);
+
+    return (opcao);
+}
+
 int main(){
-    int tamc, tamd, qtd_dis, id_c,per_c;
-    char nome[100];
-    struct Curso *cursos;
-    struct Disciplina *disciplinas;
+    int tamc=0, tamd=0, qtd_dis, id_c,per_c, esc, maiorperiodo, i=0;
+    char maiornome[100];
+    struct Curso cursos[TAM];
+    struct Disciplina disciplinas[TAM];
 
-    printf("quantas cursos deseja cadastrar? ");
-    scanf("%d", &tamc);
+    do{
+        esc = menu();
 
-    printf("quantas disciplinas deseja cadastrar? ");
-    scanf("%d", &tamd);
+        switch (esc)
+        {
+            case 1:
+                if(tamc < TAM){// se o vetor nao estiver cheio
+                    ler_curso(cursos, tamc);
+                    tamc++;
+                }else{
+                    printf("Vetor cheio!\n");
+                }
+                break;
+            
+            case 2:
+                if(tamd < TAM){
+                    ler_disciplina(disciplinas, cursos, tamd, tamc+1);
+                    tamd++;
+                }else{
+                    printf("Vetor cheio!\n");
+                }
+                break;
 
-    cursos = (struct Curso *)malloc(tamc * sizeof(struct Curso));
-    disciplinas = (struct Disciplina *)malloc(tamd * sizeof(struct Disciplina));
+            case 3:
+                //ordena curso
+                quicksort_curso(cursos,0,tamc-1);
+                break;
+                
+            case 4:
+                //ordena disciplina
+                quicksort_disc(disciplinas,0,tamd-1);
+                break;
 
-    ler_curso(cursos, 0, tamc);
-    ler_disciplina(disciplinas, cursos, 0, tamd, tamc);
+            case 5:
+                //nome do curso com mais periodos
+                strcpy(maiornome, cursos[0].nome);
+                maiorperiodo = cursos[0].periodos;
+                
+                more_periods(cursos,maiornome,&maiorperiodo,0,tamc);
+                printf("mais periodos: %s\n", maiornome);
 
-    //ordena curso
-    quicksort_curso(cursos,0,tamc-1);//ordena apenas vetores acima de 5 nao sei por que
-    //ordena disciplina
-    quicksort_disc(disciplinas,0,tamd-1);
-    //imprime
-    for(int i=0; i < tamc;i++){
-        printf("id_curso: %d\ncurso: %s\nperiodos: %d\n----------------\n", cursos[i].id_curso,cursos[i].nome,cursos[i].periodos);
-    }
+                break;
+            case 6:
+                //imprime curso 
+                for(int i=0; i < tamc;i++){
+                    printf("id_curso: %d\ncurso: %s\nperiodos: %d\n----------------\n", cursos[i].id_curso,cursos[i].nome,cursos[i].periodos);
+                }
+                break;
+            
+            case 7: 
+                //qtd de disciplinas de um curso
+                printf("id do curso: ");
+                scanf("%d", &id_c);
+                qtd_dis = qtd_disciplinas(disciplinas,id_c,0,tamd+1);
 
-    //nome do curso com mais periodos
-    strcpy(nome,more_periods(cursos,cursos[0].nome,cursos[0].periodos,0,tamc));
-    printf("mais periodos: %s\n", nome);
+                printf("quantidade de disciplinas: %d\n", qtd_dis);
 
-    //qtd de disciplinas de um curso
-    printf("id do curso: ");
-    scanf("%d", &id_c);
-    qtd_dis = qtd_disciplinas(disciplinas,id_c,0,tamd);
+                break;
 
-    printf("quantidade de disciplinas: %d\n", qtd_dis);
+            case 8:
+                // qtd de disciplinas de um determinado periodo de um curso
+                printf("id do curso: ");
+                scanf("%d", &id_c);
+                printf("periodo: ");
+                scanf("%d", &per_c);
 
+                qtd_dis = qtd_disc_periodo(disciplinas, id_c, per_c,0,tamd+1);
+                printf("quantidade de disciplinas no periodo %d: %d\n",per_c, qtd_dis);
 
-    // qtd de disciplinas de um determinado periodo de um curso
-    printf("id do curso: ");
-    scanf("%d", &id_c);
-    printf("periodo: ");
-    scanf("%d", &per_c);
+                break;
 
-    qtd_dis = qtd_disc_periodo(disciplinas, id_c, per_c,0,tamd);
-    printf("quantidade de disciplinas no periodo %d: %d\n",per_c, qtd_dis);
+            default:
+                printf("valor invalido!\n");
+                break;
 
-    free(cursos);
-    free(disciplinas);
+        }
+    }while(esc != 0);
 
-    return 0;
+    return (0);
 }

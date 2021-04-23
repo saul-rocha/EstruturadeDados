@@ -22,11 +22,11 @@ void lerMatriz(char m[TAM][TAM][100],int i,int j, int tami,int tamj){
 
 //verifica se um char é maiusculo
 int maiuscula(char c){
-    int i=0;
-    if (c > 64 && c < 91){
-        i=1;
+    int i=0; // variavel que retornará o valor
+    if (c > 64 && c < 91){ // de acordo com a tabela ascii, se o char estiver entre esses valores ele é maiusculo
+        i=1; // entao i é igual a 1
     }
-    return i;
+    return i; // retorna o valor de i
 }
 
 //converte a string pra minusculo
@@ -226,7 +226,7 @@ int conso_init(char c[TAM][TAM][100], int coluna, int i, int tam){
 int menu(){
     int opcao;
 
-    printf("1- Ler Matriz\n2- Ordenar Colunas\n3- Mostrar Desordenada\n4- Mostrar Ordenada\n5- Quantidade de Digitos e maiusculas\n6- Quantidade que iniciam com Consoantes\n0- Sair");
+    printf("1- Ler Matriz\n2- Ordenar Colunas\n3- Mostrar Desordenada\n4- Mostrar Ordenada\n5- Quantidade de Digitos e maiusculas\n6- Quantidade que iniciam com Consoantes\n0- Sair\n");
 
     printf("Digite um opcao: ");
     scanf("%d",&opcao);
@@ -269,6 +269,7 @@ int main(){
                 scanf("%d", &row);
                 printf("coluna: ");
                 scanf("%d", &colum);
+                printf("%s\n", mat1[row][colum]);
 
                 tam = strlen(mat1[row][colum]);
 
@@ -285,9 +286,12 @@ int main(){
                 conso = conso_init(mat1, colum, 0, TAM);
                 printf("%d Iniciam com Consoante\n", conso);
                 break;
-
+            case 0:
+                break;
+            default:
+                printf("opcao invalida!\n");
         }
-    }while(op < 7 && op > 0);
+    }while(op != 0);
     printf("Obrigado!\n");
     return(0);
 }
