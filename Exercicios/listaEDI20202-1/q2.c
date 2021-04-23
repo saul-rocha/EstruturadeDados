@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TAM 2
+#define TAM 3
 
 // ler a matriz de strings 
 // recebe a matriz, dois contadores i e j iniciandondo  de 0 e as dimenssões da matriz
@@ -29,10 +29,8 @@ int maiuscula(char c){
 }
 
 //converte a string pra minusculo
-void lower_string(char s[], char slower[]){
-    for(int i=0; i < strlen(s); i++){
-        slower[i] = s[i] + 32;
-    }
+void lower_string(char s, char slower){
+        slower = s + 32;
 }
 
 
@@ -44,10 +42,93 @@ void vetor(char mat[TAM][TAM][100], char vet[TAM][100], int i,int j, int tam){
     }
 }
 
+int partition(char vet[][100], int begin, int end){
+    int left, right, i=0; 
+    char key[100], aux[100], low;
+
+    left = begin; // esquerda recebe o inicio do vetor
+    right = end; // direita recebe o final do vetor
+    strcpy(key, vet[begin]); // chave começa da posição inicial
+    while (left < right) // condição de parada
+    {
+        if(maiuscula(vet[right][i]) && maiuscula(key[i])){
+            while (vet[right][i] > key[i])
+            {
+                right--; // caso o valor do vetor na posiçãodireita for maior que a cheve, a direita é decrementada
+            }
+        }else if(!maiuscula(vet[right][i]) && !maiuscula(key[i])){
+                    while (vet[right][i] > key[i])
+                    {
+                        right--; // caso o valor do vetor na posiçãodireita for maior que a cheve, a direita é decrementada
+                    }
+                }else if(maiuscula(vet[right][i]) && !maiuscula(key[i])){
+                            lower_string(vet[right][i],low);
+                            while (low > key[i])
+                            {
+                                right--; // caso o valor do vetor na posiçãodireita for maior que a cheve, a direita é decrementada
+                            }
+                            }else if(!maiuscula(vet[right][i]) && maiuscula(key[i])){
+                                        lower_string(key[i],low);
+                                        while (vet[right][i] > low)
+                                        {
+                                            right--; // caso o valor do vetor na posiçãodireita for maior que a cheve, a direita é decrementada
+                                        } 
+                                }
+
+        if(maiuscula(vet[left][i]) && maiuscula(key[i])){    
+            while (vet[left][i] < key[i])
+            {
+                left++; // caso o valor do vetor na posição esquerda for menor ou igual a chave, a esqueda é iterada
+            }
+        }else if(!maiuscula(vet[left][i]) && !maiuscula(key[i])){    
+                while (vet[left][i] < key[i])
+                {
+                    left++; // caso o valor do vetor na posição esquerda for menor ou igual a chave, a esqueda é iterada
+                }
+            }else if(maiuscula(vet[left][i]) && !maiuscula(key[i])){ 
+                        lower_string(vet[left][i],low);   
+                        while (low < key[i])
+                        {
+                            left++; // caso o valor do vetor na posição esquerda for menor ou igual a chave, a esqueda é iterada
+                        }
+                }else if(!maiuscula(vet[left][i]) && maiuscula(key[i])){ 
+                            lower_string(key[i],low);   
+                            while (vet[left][i] < low);
+                            {
+                                left++; // caso o valor do vetor na posição esquerda for menor ou igual a chave, a esqueda é iterada
+                            }
+                    }
+        
+
+        if(left < right){ // caso esquerda seja menor que a direita, é feita as trocas no vetor
+            
+            strcpy(aux, vet[right]);
+            strcpy(vet[right], vet[left]);
+            strcpy(vet[left], aux);
+        }
+        
+    }
+
+    return right; // retorna a posição da nova key
+    
+}
+//de forma geral o algoritmo quicksort particiona o vetor em duas partes de acordo com a chave(um ponto de referência)
+// valores menores que a chave sao colocados à esquerda e os maiores à direita
+
+//recebe um vetor e as posições de inicio e fim
+char quicksort(char vet[][100], int begin, int end){
+    int key;
+    if(end > begin){
+        key = partition(vet,begin,end); // separa o vetor em duas partições (esquerda e direita)
+        quicksort(vet,begin,key-1); // chama a função para a partição esquerda
+        quicksort(vet,key+1, end); // chama a função para a partição direita
+    }
+}
+
 int menu(){
     int opcao;
 
-    printf("1- Ler Matriz\n2- Ordenar Colunas\n3- Mostar Ordenada\n4- Mostar Desordenada\n5- Quantidade de Digitos e maiusculas\n6- Quantidade que iniciam com Consoantes\n");
+    printf("1- Ler Matriz\n2- Ordenar Colunas\n3- Mostrar Ordenada\n4- Mostrar Desordenada\n5- Quantidade de Digitos e maiusculas\n6- Quantidade que iniciam com Consoantes\n");
 
     printf("Digite um opcao: ");
     scanf("%d",&opcao);
@@ -56,13 +137,13 @@ int menu(){
 }
 
 
-
 int main(){
     
-    int op;
+    int op,j,coluna;
 
     char mat[TAM][TAM][100], col[TAM][100];
     char b[100];
+
     do 
     {
     
@@ -74,8 +155,18 @@ int main(){
                 printf("Lido!\n");
                 break;
             case 2:
-                lower_string(mat[0][0],b);
-                printf("%s\n", b);
+                for(coluna=0;coluna<TAM;coluna++){
+                    vetor(mat,col,0,coluna,TAM);
+                    //printf("desordenadao\n");
+                    //for(j=0;j<TAM;j++){
+                    //    printf("string: %s \n",col[j]);
+                    //}
+                    quicksort(col,0,TAM-1);
+                    printf("Colunas Ordenadas\n");
+                    for(j=0;j<TAM;j++){
+                        printf("coluna[%d]: %s \n",coluna,col[j]);
+                    }
+                }
                 break;
 
             case 3:

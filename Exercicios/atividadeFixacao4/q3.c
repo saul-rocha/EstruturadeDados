@@ -5,8 +5,6 @@
 
 //QuickSort
 // separa o vetor em duas partições
-//[2,1,0,3,7,8,5,4,9,6]  begin = 0 end = 9 | [0,1,2,3,7,8,5,4,9,6]  begin = 0 end = 2 | 
-// pendencia [2,1,0,3,6,8,5,4,9,7] begin = 4 end = 9 
 int partition(int vet[], int begin, int end){
     int left, right, key, aux;
 
@@ -25,8 +23,6 @@ int partition(int vet[], int begin, int end){
             left++; // caso o valor do vetor na posição esquerda for menor ou igual a chave, a esqueda é iterada
         }
         if(left < right){ // caso esquerda seja menor que a direita, é feita as trocas no vetor
-            // aux = 3  vet[5] = 8 vet[0] = 3 | aux = 0  vet[2] = 2 vet[0] = 0 |
-            // aux = 6  vet[9] = 7 vet[4] = 6
             aux = vet[right];
             vet[right] = vet[left];
             vet[left] = aux;
