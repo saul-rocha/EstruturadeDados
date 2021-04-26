@@ -1,16 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
 
 //preenche uma matriz
 void preenche(int **mat,int i,int j,int tam){
     if (i < tam){
         if(j < tam){
-            mat[i][j] =  rand() % 10;//preenche a matriz com valores aleatoria entre 0 e 9
-            preenche(mat,i,j+1,tam);
+            
+            printf("Linha %d Coluna %d: ", i, j);
+            scanf("%d", &mat[i][j]);
+            j++;
+            preenche(mat,i,j,tam);
+        }else{
+            i++;
+            preenche(mat,i,0,tam);
+
         }
-        preenche(mat,i+1,0,tam);
     }
     
 }
