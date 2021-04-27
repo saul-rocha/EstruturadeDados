@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define TAM 3
+#define TAM 2
 
 // ler a matriz de strings 
 // recebe a matriz, dois contadores i e j iniciandondo  de 0 e as dimenssões da matriz
@@ -29,9 +29,29 @@ int maiuscula(char c){
     return i; // retorna o valor de i
 }
 
-//converte a string pra minusculo
-void lower_string(char s, char slower){
-        slower = s + 32;
+//compara duas strings
+int compare_strings(char s1[], char s2[]){
+	int i = 0, j = 0, res = 0;
+	while(s1[i] != '\0' && s2[j] != '\0'){
+        if(tolower(s1[i]) < tolower(s2[j])){//como podem ser palavras 
+            //maisculas e minusculas a função tolower transformara todas em minusculas
+            return 0;
+        }
+        if(tolower(s1[i]) > tolower(s2[j])){
+            return 1;
+        }
+        i++;
+        j++;
+    }
+	//caso sejam igual entra em uma dessas condições
+    if(strlen(s1) < strlen(s2)){
+        return 0;
+    }
+    if(strlen(s1) > strlen(s2)){
+        return 1;
+    }
+	return 1;
+    // retona 0 se string1 maior que string2 e 1 caso contrario
 }
 
 
@@ -67,53 +87,16 @@ int partition(char vet[][100], int begin, int end){
     strcpy(key, vet[begin]); // chave começa da posição inicial
     while (left < right) // condição de parada
     {
-        if(maiuscula(vet[right][i]) && maiuscula(key[i])){
-            while (vet[right][i] > key[i])
+        if(compare_strings(vet[right],key) == 1){
             {
                 right--; // caso o valor do vetor na posiçãodireita for maior que a cheve, a direita é decrementada
             }
-        }else if(!maiuscula(vet[right][i]) && !maiuscula(key[i])){
-                    while (vet[right][i] > key[i])
-                    {
-                        right--; // caso o valor do vetor na posiçãodireita for maior que a cheve, a direita é decrementada
-                    }
-                }else if(maiuscula(vet[right][i]) && !maiuscula(key[i])){
-                            lower_string(vet[right][i],low);
-                            while (low > key[i])
-                            {
-                                right--; // caso o valor do vetor na posiçãodireita for maior que a cheve, a direita é decrementada
-                            }
-                            }else if(!maiuscula(vet[right][i]) && maiuscula(key[i])){
-                                        lower_string(key[i],low);
-                                        while (vet[right][i] > low)
-                                        {
-                                            right--; // caso o valor do vetor na posiçãodireita for maior que a cheve, a direita é decrementada
-                                        } 
-                                }
-
-        if(maiuscula(vet[left][i]) && maiuscula(key[i])){    
-            while (vet[left][i] < key[i])
+        }
+        if(compare_strings(vet[left], key) == 0){  
             {
                 left++; // caso o valor do vetor na posição esquerda for menor ou igual a chave, a esqueda é iterada
             }
-        }else if(!maiuscula(vet[left][i]) && !maiuscula(key[i])){    
-                while (vet[left][i] < key[i])
-                {
-                    left++; // caso o valor do vetor na posição esquerda for menor ou igual a chave, a esqueda é iterada
-                }
-            }else if(maiuscula(vet[left][i]) && !maiuscula(key[i])){ 
-                        lower_string(vet[left][i],low);   
-                        while (low < key[i])
-                        {
-                            left++; // caso o valor do vetor na posição esquerda for menor ou igual a chave, a esqueda é iterada
-                        }
-                }else if(!maiuscula(vet[left][i]) && maiuscula(key[i])){ 
-                            lower_string(key[i],low);   
-                            while (vet[left][i] < low);
-                            {
-                                left++; // caso o valor do vetor na posição esquerda for menor ou igual a chave, a esqueda é iterada
-                            }
-                    }
+        }
         
 
         if(left < right){ // caso esquerda seja menor que a direita, é feita as trocas no vetor
