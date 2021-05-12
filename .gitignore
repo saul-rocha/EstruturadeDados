@@ -53,3 +53,4 @@ dkms.conf
 Docs/planoEDI20202.pdf
 *.pdf
 *.zip
+.vscode/c_cpp_properties.json

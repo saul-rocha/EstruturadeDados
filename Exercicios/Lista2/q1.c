@@ -29,14 +29,17 @@ int entrada(struct Carro *c, int placa){
 
 }
 
-int saida(struct Carro *c, int placa, int primeiro){
-    int aux, cont=0, i;
+//
+int saida(struct Carro *c, int placa, int *manob, int primeiro){
+    int aux, aux2, cont=0, i;
     if(c->inicio <= c->fim){
         //quando encontrar a placa diminui a fila movimentando todos os carros em uma posição
         if(c->placa[c->inicio] == placa){
+            *manob = c->manobras[c->inicio];
             //realoca os carros
             for(i=0; i < c->fim;i++){
                 c->placa[i] = c->placa[i+1];
+                c->manobras[i] = c->manobras[i+1];
             }
             primeiro = c->placa[c->inicio];
             //diminui o fim da fila em 1 posição
@@ -44,24 +47,35 @@ int saida(struct Carro *c, int placa, int primeiro){
             i=0;
             
         }else{
+            //incrementa a quantidade de manobras e guarda o carro do inicio da fila e qtd de manobras que ele ja fez
+            c->manobras[c->inicio]++;
             aux = c->placa[c->inicio];
+            aux2 = c->manobras[c->inicio];
             for(int i=0; i < c->fim;i++){
+                //anda a fila uma posição
+                c->manobras[i] = c->manobras[i+1];
                 c->placa[i] = c->placa[i+1];
             }
+            //coloca no final da fila o carro guardado
+            c->manobras[c->fim] = aux2;
             c->placa[c->fim] = aux;
-            cont = saida(c, placa, primeiro) + 1;// chama recursivamente e soma pendentemente uma manobra feita pelo carro
+            cont = saida(c, placa, manob, primeiro) + 1;// chama recursivamente e soma pendentemente uma manobra feita pelo carro
         }
-        // coloca a fila como era antes, assimque o carro é retirado
+        // coloca a fila como era antes, assim que o carro é retirado
         while (c->placa[c->inicio] != primeiro)
             {
                 aux = c->placa[c->inicio];
+                aux2 = c->manobras[c->inicio];
                 for(i=0; i < c->fim;i++){
                     c->placa[i] = c->placa[i+1];
+                    c->manobras[i] = c->manobras[i+1];
                 }
                 c->placa[c->fim] = aux;
+                c->manobras[c->fim] = aux2;
             }
 
     }else{
+        // se inicio for maior ou igual ao fim reinicia a fila
         c->inicio = c->fim = -1;
     }
 
@@ -70,14 +84,16 @@ int saida(struct Carro *c, int placa, int primeiro){
 
 void imprime_fila(struct Carro *c){
     for (int i=0; i <= c->fim;i++){
-        printf("%d ", c->placa[i]);
+        printf("Placa: %d\n", c->placa[i]);
+        printf("manobras feitas: %d\n", c->manobras[i]);   
     }
 }
 
+// retorna um char maiusculo
 char menu(){
     char op;
-
-    printf("E - Entrar carro  ||  S - Sair Carro\n");
+    
+    printf("E - Entrar carro  |  S - Sair Carro | I - Imprimir | 0 - Sair\n");
     scanf("%c", &op);
 
     return toupper(op);
@@ -87,9 +103,10 @@ int main(){
     
     struct  Carro carros;
 
-    int placa, continua, verifica, qtd_manobras;
+    int placa, continua, verifica, qtd_manobras, carros_manobrados;
     char op;
 
+    // inicia a fila
     carros.inicio = -1;
     carros.fim = -1;
 
@@ -99,7 +116,7 @@ int main(){
     }
 
     do{
-
+        //está duplicando o menu :(
         op = menu();
 
         switch (op)
@@ -108,6 +125,7 @@ int main(){
         case 'E':
             printf("Placa do carro: ");
             scanf("%d", &placa);
+            setbuf(stdin,NULL);
             verifica = entrada(&carros, placa);
             if(verifica){
                 printf("Existe vaga\n%d entrou no escionamento!\n", placa);
@@ -120,10 +138,11 @@ int main(){
             printf("Placa do carro: ");
             scanf("%d", &placa);
 
-            qtd_manobras = saida(&carros, placa, carros.placa[0]);
+            carros_manobrados = saida(&carros, placa, &qtd_manobras, carros.placa[0]);
 
             printf("%d saiu do escionamento!\n", placa);
-            printf("Carros manobrados %d vezes!\n", qtd_manobras);
+            printf("Manobras Feitas: %d!\n", qtd_manobras);
+            printf("Carros manobrados: %d!\n", carros_manobrados);
 
             break;
 
