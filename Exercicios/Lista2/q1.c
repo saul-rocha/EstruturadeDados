@@ -95,6 +95,7 @@ char menu(){
     
     printf("E - Entrar carro  |  S - Sair Carro | I - Imprimir | 0 - Sair\n");
     scanf("%c", &op);
+    setbuf(stdin,NULL);
 
     return toupper(op);
 }
@@ -125,6 +126,7 @@ int main(){
         case 'E':
             printf("Placa do carro: ");
             scanf("%d", &placa);
+            //limpa o buffer do teclado
             setbuf(stdin,NULL);
             verifica = entrada(&carros, placa);
             if(verifica){
@@ -137,6 +139,7 @@ int main(){
         case 'S':
             printf("Placa do carro: ");
             scanf("%d", &placa);
+            setbuf(stdin,NULL);
 
             carros_manobrados = saida(&carros, placa, &qtd_manobras, carros.placa[0]);
 
