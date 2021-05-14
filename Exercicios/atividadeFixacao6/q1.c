@@ -9,6 +9,7 @@ struct PilhaCD{
     struct PilhaCD *ant;
 };
 
+// aloca espaço de momoria para um cd
 struct PilhaCD *alocaNO(){
     
     struct PilhaCD *new;
@@ -20,6 +21,8 @@ struct PilhaCD *alocaNO(){
 };
 
 //////////////////////////////////BASICS//////////////////////////////////////////////////////////
+
+//ler os dados de um CD e devolve por parametro
 void ler_cd(int *cod,char titulo[50],char artista[100],int *ano){
     do{
         printf("Codigo: ");
@@ -54,13 +57,13 @@ void empilhar_cd(struct PilhaCD **top, struct PilhaCD *No, int cod, char titulo[
 }
 
 int desempilhar_cd(struct PilhaCD **top){
-    int id;
+    int id = -1;
     struct PilhaCD *aux;
     if(*top != NULL){
         
         id = (**top).cod;//guarda o codigo do cd que será desempilhado
         aux = *top; // aux guarda o endereço do top
-        *top = (**top).ant;//top recebe o endereço do cd anterior
+        *top = (**top).ant;//top    recebe o endereço do cd anterior
         free(aux);//libera o endereço de aux(onde cd que foi desempilhado esta/estava)
     }
     return id;//retorna o codigo do cd desempilhado
@@ -82,28 +85,25 @@ void imprimir_PilhaCDs(struct PilhaCD *top){
     
 }
 
-void montar_pilha_ano(struct PilhaCD *top_estilo, struct PilhaCD **top, struct PilhaCD *No, int ano){
+void montar_pilha_ano(struct PilhaCD **top_estilo, struct PilhaCD **top, struct PilhaCD *No, int ano){
     int id_cd;
-    if(top_estilo != NULL){// se pilha do estilo musical não estiver vazia e No tiver alocado
-        if( (*top_estilo).ano == ano){
-             //atribui as informações para a pilha resultante
-            (*No).cod = (*top_estilo).cod;
-            strcpy((*No).titulo,(*top_estilo).titulo);
-            strcpy((*No).artista,(*top_estilo).artista);
-            (*No).ano = (*top_estilo).ano;
+    if(*top_estilo != NULL){// se pilha do estilo musical não estiver vazia e No tiver alocado
+        if( (**top_estilo).ano == ano){
 
-            //ant aponta para o endereço de memoria do top
-            (*No).ant = *top;
-            //top agora aponta para o endereço de No    
-            *top = No;
-            id_cd = desempilhar_cd(&top_estilo);//desempilha
+            No = alocaNO();
+            empilhar_cd(top, No, (**top_estilo).cod, (**top_estilo).titulo, (**top_estilo).artista, (**top_estilo).ano);
+
+            id_cd = desempilhar_cd(top_estilo);//desempilha
+
             printf("CD de Codigo %d Adicionado!\n", id_cd);
             montar_pilha_ano(top_estilo, top, No, ano);// o primeiro parametro é o próprio endereço do top_estilo musical pois um cd foi adicionado
                                                         // e quando dessempilha o cd o top é alterado por referencia
-        }
+            
+        }else{
+            montar_pilha_ano(&(**top_estilo).ant, top, No, ano); // chama recursivamente para procurar no restante da pilha do estilo musical
+            // o primeiro parametro é o endereço do cd anterior, pois se não for adicionado a pilha resultante, aquele cd não será desempilhado
+        }   
 
-        montar_pilha_ano((*top_estilo).ant, top, No, ano); // chama recursivamente para procurar no restante da pilha do estilo musical
-        // o primeiro parametro é o endereço do cd anterior, pois se não for adicionado a pilha resultante, aquele cd não será desempilhado
     }
 }
 
@@ -111,7 +111,7 @@ void montar_pilha_ano(struct PilhaCD *top_estilo, struct PilhaCD **top, struct P
 int menu(){
     int opcao;
 
-    printf("1- Ler CD e Adicionar Numa Pilha\n2- Imprimir CDs\n0- Sair\n");
+    printf("1- Ler CD e Adicionar Numa Pilha\n2- Imprimir CDs\n3- Criar Pilha Pelo Ano\n0- Sair\n");
 
     printf("Digite um opcao: ");
     scanf("%d",&opcao);
@@ -122,7 +122,7 @@ int menu(){
 int submenu(){
     int opcao;
 
-    printf("1- Adicionar a Pilha POP\n2- Adicionar a Pilha ROCK\n3-Adicionar a Pilha SERTANEJO\n4- Adicionar a Pilha FORRO\n5- Adicionar a Pilha AXE\n");
+    printf("1- Adicionar a Pilha POP\n2- Adicionar a Pilha ROCK\n3- Adicionar a Pilha SERTANEJO\n4- Adicionar a Pilha FORRO\n5- Adicionar a Pilha AXE\n");
 
     printf("Digite um opcao: ");
     scanf("%d",&opcao);
@@ -132,7 +132,7 @@ int submenu(){
 int submenu2(){
     int opcao;
 
-    printf("1- Imprimir a Pilha POP\n2- Imprimir a Pilha ROCK\n3- Imprimir a Pilha SERTANEJO\n4- Imprimir a Pilha FORRO\n5- Imprimir a Pilha AXE\n6- Imprimir a Pilha do Ano");
+    printf("1- Imprimir a Pilha POP\n2- Imprimir a Pilha ROCK\n3- Imprimir a Pilha SERTANEJO\n4- Imprimir a Pilha FORRO\n5- Imprimir a Pilha AXE\n6- Imprimir a Pilha do Ano\n");
 
     printf("Digite um opcao: ");
     scanf("%d",&opcao);
@@ -151,8 +151,6 @@ int main(){
     top_sertanejo = NULL;
     top_forro = NULL;
     top_axe = NULL;
-
-    //id_removido = desempilhar_cd(&top);
 
     do{
         op = menu();
@@ -234,12 +232,12 @@ int main(){
         case 3:
             printf("Digite o ano da pilha que deseja formar: ");
             scanf("%d", &anoCD);
-            No = alocaNO();
-            montar_pilha_ano(top_pop, &top, No, anoCD);
-            montar_pilha_ano(top_rock, &top, No, anoCD);
-            montar_pilha_ano(top_sertanejo, &top, No, anoCD);
-            montar_pilha_ano(top_forro, &top, No, anoCD);
-            montar_pilha_ano(top_axe, &top, No, anoCD);
+            montar_pilha_ano(&top_pop, &top, No, anoCD);
+            montar_pilha_ano(&top_rock, &top, No, anoCD);
+            montar_pilha_ano(&top_sertanejo, &top, No, anoCD);
+            montar_pilha_ano(&top_forro, &top, No, anoCD);
+            montar_pilha_ano(&top_axe, &top, No, anoCD);
+            break;
         
         default:
 
