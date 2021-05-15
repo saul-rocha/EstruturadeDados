@@ -7,38 +7,58 @@ struct alunos{
     int matricula, ano_escolar, idade;
     char nome[100];
 
-    struct alunos *prox, *ant;
+    struct alunos *prox;
 };
 
 ////////////////////////BASICS//////////////////////////////////////
-//aloca espaço de memoria para um aluno e ler os dados
-struct alunos *aloca_ler_aluno(int mat, char nome[100], int ano, int idade){
+
+//aloca  espaço para um aluno
+struct alunos *alocaNo(){
     struct alunos *new;
 
     new = NULL;
     new = (struct alunos*)malloc(sizeof(struct alunos));
-
-    new->matricula = mat;
-    strcpy(new->nome, nome);
-    new->ano_escolar = ano;
-    new->idade = idade;
+    
     
     return new;
 
 }
 
+//Ler os dados de um aluno diretamente
+void ler_aluno(struct alunos *No){
+    
+    printf("Matricula: ");
+    scanf("%d", &(*No).matricula);
+    printf("Nome: ");
+    scanf("%s", No->nome);
+    do{
+        printf("Ano Escolar: ");
+        scanf("%d", &(*No).ano_escolar);
+        if(No->ano_escolar < 5 || No->ano_escolar > 9){
+            printf("so existem os anos entre 5 e 9\n");
+        }
+    }while(No->ano_escolar < 5 || No->ano_escolar > 9);
+    printf("Idade: ");
+    scanf("%d", &(*No).idade);
+
+}
+
+
+// adiciona um aluno na fila
 void add_fila(struct alunos **I, struct alunos **F, struct alunos *No){
 
     if(*I == NULL){
         *I = *F = No;
-    }else{
+    }else{  
         (**F).prox = No;
         *F = No;
     }
 
 }
 
-struct alunos *out_fila(struct alunos *I, struct alunos **F){
+//retira o primeiro da fila
+
+void out_fila(struct alunos *I, struct alunos **F){
     struct alunos *aux;
 
     if(I != NULL){
@@ -52,8 +72,7 @@ struct alunos *out_fila(struct alunos *I, struct alunos **F){
         }
         free(aux);
     }
-        
-    return I;
+       
 }
 
 
@@ -75,49 +94,43 @@ void imprimir(struct alunos *I){
 
 
 //tira aluno pela matricula
-int out_matricula(struct alunos *I, int mat){
-    struct alunos *aux;
-    int res=-1;
-
-    if(I != NULL && I->matricula == mat){
-        aux = I;
-
-        res = aux->matricula;
-
-        I = I->prox; 
+void out_matricula(struct alunos *I, struct alunos *F, int mat){
     
-        free(aux);
-
-    }else if(I != NULL){
-        out_matricula(I->prox, mat);
+    if(I != NULL){
+        if(I->matricula == mat){
+            out_fila(I,&F);
+        }else{
+            out_matricula(I->prox, F, mat);
+        }
     }
-
-    return res;
 }
 
 void divide(struct alunos *I, struct alunos **F, struct alunos **Ires, struct alunos **Fres, int ano){
     
-
     if (I != NULL && I->ano_escolar == ano)
     {
+        
         if(*Ires == NULL){
-            **Ires = *I;
-            **Fres = *I;
+            *Ires = *Fres = I;
         }else{
-            
+            (**Fres).prox = I;
+            *Fres = I;
         }
+        out_fila(I,F);
+        printf("matricula %d adicionado a fila do %d ano\n", (**Fres).matricula , ano);
+    }else if(I != NULL){
+        divide(I,F, Ires, Fres, ano);
     }
     
-
 }
 
 // menu de opções
 int menu(){
     int opcao;
 
-    printf("1- Adicionar na fila\n2- Imprimir Fila\n3- Retirar Por Matricula\n0- Sair\n");
+    printf("1- Adicionar na fila\n2- Imprimir Fila\n3- Retirar Por Matricula\n4- Dividir Fila\n0- Sair\n");
 
-    printf("Digite um opcao: ");
+    printf("Digite uma opcao: ");
     scanf("%d",&opcao);
 
     return (opcao);
@@ -126,8 +139,8 @@ int menu(){
 int submenu(){
     int op;
 
-    printf("0- fila Principal\n1- 1ano\n2- 2ano Fila\n3-3ano\n4- 4ano\n5- 5ano\n");
-    printf("Digite um opcao: ");
+    printf("0- fila Principal\n1- 5ano\n2- 6ano\n3- 7ano\n4- 8ano\n5- 9ano\n");
+    printf("Digite uma opcao: ");
     scanf("%d",&op);
 
     return (op);
@@ -135,35 +148,26 @@ int submenu(){
 
 
 int main(){
-    struct alunos *begin, *end, *begin1, *end1, *begin2, *end2, *begin3, *end3, *begin4, *end4, *begin5, *end5, *No, *No1, *No2, *No3, *No4, *No5;
+    struct alunos *begin, *end, *begin1, *end1, *begin2, *end2, *begin3, *end3, *begin4, *end4, *begin5, *end5, *No;
 
     int matricula, mat, ano_escolar, idade, op, op2;
     char nome[100];
 
-    begin = NULL;
-    begin1 = NULL;
-    begin2 = NULL;
-    begin3 = NULL;
-    begin4 = NULL;
-    begin5 = NULL;
+    begin = end = NULL;
+    begin1 = end1 = NULL;
+    begin2 = end2 = NULL;
+    begin3 = end3 = NULL;
+    begin4 = end4 = NULL;
+    begin5 = end5 = NULL;
+    
     do{
         op = menu();
 
         switch (op)
         {
             case 1:
-                printf("Matricula: ");
-                scanf("%d", &matricula);
-                printf("Nome: ");
-                scanf("%s", nome);
-                do{
-                    printf("Ano Escolar: ");
-                    scanf("%d", &ano_escolar);
-                }while(ano_escolar > 9 && ano_escolar < 5);
-
-                printf("Idade: ");
-                scanf("%d", &idade);
-                No = aloca_ler_aluno(matricula, nome, ano_escolar, idade);
+                No = alocaNo();
+                ler_aluno(No); 
                 add_fila(&begin, &end, No);
                 break;
             
@@ -192,18 +196,20 @@ int main(){
                 default:
                     break;
                 }
+                break;
             case 3:
                 printf("Digite a matricula: ");
                 scanf("%d", &mat);
-                mat = out_matricula(begin, mat);
-                if (mat == -1){
-                    printf("nao encontrado!\n");
-                }else{
-                    printf("%d removido!\n", mat);
-                }
+                out_matricula(begin,end, mat);
+               
                 break;
             
             case 4:
+                divide(begin, &end, &begin1, &end1, 5);
+                //divide(begin, &end, &begin2, &end2, 6);
+                //divide(begin, &end, &begin3, &end3, 7);
+                //divide(begin, &end, &begin4, &end4, 8);
+                //divide(begin, &end, &begin5, &end5, 9);
                 printf("Fila dividida em 5 filas diferentes!\nTente imprimir alguma fila.\n");
                 break;
             default:
