@@ -40,6 +40,7 @@ void ler_aluno(struct alunos *No){
     }while(No->ano_escolar < 5 || No->ano_escolar > 9);
     printf("Idade: ");
     scanf("%d", &(*No).idade);
+    setbuf(stdin,NULL);
 
 }
 
@@ -58,19 +59,19 @@ void add_fila(struct alunos **I, struct alunos **F, struct alunos *No){
 
 //retira o primeiro da fila
 
-void out_fila(struct alunos *I, struct alunos **F){
+void out_fila(struct alunos **I, struct alunos **F){
     struct alunos *aux;
-
+    //verifica se a fila está vazia
     if(I != NULL){
-        aux = I;
-        if (I->prox != NULL)
+        aux = *I;// aux recebe o endereço de I
+        if ((*I)->prox != NULL)
         {
-            I = I->prox;
+            *I = (*I)->prox;//se o proximo da fila não for NULL, I recebe o endereço do proximo
             
         }else{
-            I = *F = I->prox;
+            *I = *F = NULL;// caso o proximo seja o ultimo, reseta a fila
         }
-        free(aux);
+        free(aux);// libera o endereço que guardava o primeiro da fila
     }
        
 }
@@ -98,7 +99,7 @@ void out_matricula(struct alunos *I, struct alunos *F, int mat){
     
     if(I != NULL){
         if(I->matricula == mat){
-            out_fila(I,&F);
+            out_fila(&I,&F);
         }else{
             out_matricula(I->prox, F, mat);
         }
@@ -111,15 +112,20 @@ void divide(struct alunos *I, struct alunos **F, struct alunos **Ires, struct al
     {
         
         if(*Ires == NULL){
-            *Ires = *Fres = I;
+            *Ires = alocaNo();
+            *Fres = alocaNo();
+            **Ires = **Fres = *I;
         }else{
+            (*Fres)->prox = alocaNo();
+            *Fres = alocaNo();
             (**Fres).prox = I;
             *Fres = I;
         }
-        out_fila(I,F);
+        out_fila(&I,F);
         printf("matricula %d adicionado a fila do %d ano\n", (**Fres).matricula , ano);
-    }else if(I != NULL){
         divide(I,F, Ires, Fres, ano);
+    }else if(I != NULL){
+        divide(I->prox,F, Ires, Fres, ano);
     }
     
 }
@@ -153,6 +159,7 @@ int main(){
     int matricula, mat, ano_escolar, idade, op, op2;
     char nome[100];
 
+    //inicia a fila
     begin = end = NULL;
     begin1 = end1 = NULL;
     begin2 = end2 = NULL;
@@ -166,9 +173,9 @@ int main(){
         switch (op)
         {
             case 1:
-                No = alocaNo();
-                ler_aluno(No); 
-                add_fila(&begin, &end, No);
+                No = alocaNo();//aloca um espaço para um novo aluno
+                ler_aluno(No); //ler os dados
+                add_fila(&begin, &end, No);// add o novo aluno a fila
                 break;
             
             case 2:
@@ -200,16 +207,16 @@ int main(){
             case 3:
                 printf("Digite a matricula: ");
                 scanf("%d", &mat);
-                out_matricula(begin,end, mat);
+                out_matricula(begin,end, mat);//remove pela matricula
                
                 break;
             
             case 4:
                 divide(begin, &end, &begin1, &end1, 5);
-                //divide(begin, &end, &begin2, &end2, 6);
-                //divide(begin, &end, &begin3, &end3, 7);
-                //divide(begin, &end, &begin4, &end4, 8);
-                //divide(begin, &end, &begin5, &end5, 9);
+                divide(begin, &end, &begin2, &end2, 6);
+                divide(begin, &end, &begin3, &end3, 7);
+                divide(begin, &end, &begin4, &end4, 8);
+                divide(begin, &end, &begin5, &end5, 9);
                 printf("Fila dividida em 5 filas diferentes!\nTente imprimir alguma fila.\n");
                 break;
             default:
