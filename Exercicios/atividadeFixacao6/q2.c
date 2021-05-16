@@ -97,35 +97,36 @@ void imprimir(struct alunos *I){
 //tira aluno pela matricula
 void out_matricula(struct alunos *I, struct alunos *F, int mat){
     
-    if(I != NULL){
+    if(I != NULL){//verifica se esstá  vazia
         if(I->matricula == mat){
-            out_fila(&I,&F);
+            out_fila(&I,&F);// chama a função para remover da fila passando o inicio e o fim por referencia
         }else{
-            out_matricula(I->prox, F, mat);
+            out_matricula(I->prox, F, mat);//caso nao seja o aluno da matricula passada por parametro, chama recursivamente a função passando o proximo aluno como inicio da fila
         }
     }
 }
 
+//preenche uma nova fila a partir de uma existente
 void divide(struct alunos *I, struct alunos **F, struct alunos **Ires, struct alunos **Fres, int ano){
-    
+    //se nao for vazia e ano escolar for o requerido
     if (I != NULL && I->ano_escolar == ano)
     {
         
         if(*Ires == NULL){
-            *Ires = alocaNo();
+            *Ires = alocaNo();//aloca um espaço para um novo aluno no inicio e no fim
             *Fres = alocaNo();
-            **Ires = **Fres = *I;
+            **Ires = **Fres = *I;//atribui o conteudo de I para o inicio e fim da fila resultante
         }else{
             (*Fres)->prox = alocaNo();
             *Fres = alocaNo();
             (**Fres).prox = I;
             *Fres = I;
         }
-        out_fila(&I,F);
+        out_fila(&I,F);//remove o aluno da fila original
         printf("matricula %d adicionado a fila do %d ano\n", (**Fres).matricula , ano);
-        divide(I,F, Ires, Fres, ano);
+        divide(I,F, Ires, Fres, ano);// chama recursivamente caso for adicionado um aluno até que a fila seja toda verificada
     }else if(I != NULL){
-        divide(I->prox,F, Ires, Fres, ano);
+        divide(I->prox,F, Ires, Fres, ano);// chama recursivamente caso NAO for adicionado um aluno até que a fila seja toda verificada
     }
     
 }
@@ -154,6 +155,7 @@ int submenu(){
 
 
 int main(){
+    //um inicio e um fim para cada fila 
     struct alunos *begin, *end, *begin1, *end1, *begin2, *end2, *begin3, *end3, *begin4, *end4, *begin5, *end5, *No;
 
     int matricula, mat, ano_escolar, idade, op, op2;

@@ -141,6 +141,7 @@ int submenu2(){
 }
 
 int main(){
+    // um top e um No para cada pilha
     struct PilhaCD *top, *No, *top_pop, *No_pop, *top_rock, *No_rock, *top_sertanejo, *No_sertanejo, *top_forro, *No_forro, *top_axe, *No_axe;
     int cod, ano, id_removido, op, op2, anoCD;
     char titulo[50], artista[100];
