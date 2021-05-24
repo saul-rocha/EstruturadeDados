@@ -29,8 +29,8 @@ int entrada(struct Carro *c, int placa){
 
 }
 
-//
-int saida(struct Carro *c, int placa, int *manob, int primeiro){
+//retira um carro
+int saida(struct Carro c[10], int placa, int *manob, int primeiro){
     int aux, aux2, cont=0, i;
     if(c->inicio <= c->fim){
         //quando encontrar a placa diminui a fila movimentando todos os carros em uma posição
@@ -83,9 +83,11 @@ int saida(struct Carro *c, int placa, int *manob, int primeiro){
 }
 
 void imprime_fila(struct Carro *c){
+    struct Carro aux;
+
     for (int i=0; i <= c->fim;i++){
         printf("Placa: %d\n", c->placa[i]);
-        printf("manobras feitas: %d\n", c->manobras[i]);   
+        printf("manobras feitas: %d\n", c->manobras[i]);  
     }
 }
 
@@ -143,7 +145,7 @@ int main(){
 
             carros_manobrados = saida(&carros, placa, &qtd_manobras, carros.placa[0]);
 
-            printf("%d saiu do escionamento!\n", placa);
+            printf("%d saiu do estacionamento!\n", placa);
             printf("Manobras Feitas: %d!\n", qtd_manobras);
             printf("Carros manobrados: %d!\n", carros_manobrados);
 
