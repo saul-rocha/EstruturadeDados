@@ -76,14 +76,37 @@ void convert_to_num(char str[4], int i, int tam, int uni, int *valor){
     
 }
 
+int is_operator(char o){
+    int res = 0;
+
+    if( o == '/' || o == '*' || o == '-' || o == '+'){
+        res = 1;
+    }
+
+    return 0;
+}
+
+
 // i inicia de 1
-int valid_expression(char s[100]){
-    int res=0;
-
-
-    
+int valid_expression(char s[100], int i){
+    int res=1;
+    if(is_operator(s[0]) || s[0] != '(' ){
+        res = 0;
+    }else{
+        while((s[i] != '\' && res != 0) || s[i] != '\0'){
+            
+            if(isdigit(s[i]) && ((s[i+1] == ' ') || (isdigit(s[i+1]))) || is_operator(s[i]) && (s[i+1] == ' ')){//se na posição i for digito/ouperador o proximo dever ser um espaço ou outro digito
+                res = 1;
+            }else if(s[i] == ' '){
+                res = 0;
+            }
+            i++;
+        }
+    }
     return res;
 }
+
+
 
 int main(){
     struct  pilha *pilha_operandos, *pilha_operadores, *No;
@@ -111,20 +134,21 @@ int main(){
 
     printf("%d\n", tam);
     setbuf(stdin,NULL);
-    //valid = valid_expression(infixa , 0, tam);
-    //if(valid){
-    //    printf("Expressao eh Valida!\n");
-    //}else{
-    //    printf("Expressao NAO eh Valida\n");
-    //}
-    
-    for(int i=0; infixa[i] != '\0'; i++){
-        if(infixa[i] != ' '){
-            
-            empilhar(&pilha_operadores, No, infixa[i]);
+    valid = valid_expression(infixa , 1);
+    if(valid){
+        printf("Expressao eh Valida!\n");
 
-        }
+            for(int i=0; infixa[i] != '\0'; i++){
+                if(infixa[i] != ' '){
+                    
+                    empilhar(&pilha_operadores, No, infixa[i]);
+
+                }
+            }
+    }else{
+        printf("Expressao NAO eh Valida\n");
     }
+    
     imprimir(pilha_operadores);
 
 
