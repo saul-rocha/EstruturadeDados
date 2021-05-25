@@ -90,19 +90,18 @@ int is_operator(char o){
 // i inicia de 1
 int valid_expression(char s[100], int i){
     int res=1;
-    if(is_operator(s[0]) || s[0] != '(' ){
+    if(is_operator(s[0]) || (!isdigit(s[0]) && s[0] != '(')){
         res = 0;
-    }else{
-        while((s[i] != '\' && res != 0) || s[i] != '\0'){
-            
-            if(isdigit(s[i]) && ((s[i+1] == ' ') || (isdigit(s[i+1]))) || is_operator(s[i]) && (s[i+1] == ' ')){//se na posição i for digito/ouperador o proximo dever ser um espaço ou outro digito
-                res = 1;
-            }else if(s[i] == ' '){
-                res = 0;
+    }else{//se ultimo elemento é um fecha parêntese ou digito
+            res = 1;
+            while(res != 0 && s[i] != '\0'){
+                
+                if(s[i] == ' ' || (isdigit(s[i]) && ((s[i+1] == ' ') || (isdigit(s[i+1])))) || is_operator(s[i]) && (s[i+1] == ' ')){//se na posição i for digito/ouperador o proximo dever ser um espaço ou outro digito
+                    res = 1;
+                }
+                i++;
             }
-            i++;
         }
-    }
     return res;
 }
 
