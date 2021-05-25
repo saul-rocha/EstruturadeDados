@@ -60,7 +60,7 @@ struct carro saida(struct carro **I, struct carro **F, int placa, int *cont, int
         *I = (*I)->prox;
         entrada(I, F, aux);
         free(aux2);
-        saiu = saida(I, F, placa, cont,first_placa);
+        saiu = saida(I, F, placa, cont, first_placa);
         //deixa pendente a realocação dos carros
         while(first_placa != (*I)->placa){
             aux2 = *I;
