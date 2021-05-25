@@ -2,15 +2,64 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-//http://www.vision.ime.usp.br/~pmiranda/mac122_2s14/aulas/aula13/aula13.html
 
-struct pos_fixa
+//////////////////////////////////////
+struct pilha
 {
-    char operandos[100];
-    char operadores[100];
-    int top_operandos, top_operadores;    
+    char notation;
+    struct pilha *top;
 };
 
+
+struct pilha *alocaNo(){
+    struct pilha *new;
+
+    new = (struct pilha *)malloc(sizeof(struct pilha));
+
+    new->notation = '\0';
+    new->top = NULL;
+
+    return new;
+}
+
+
+void empilhar(struct pilha **top, struct pilha *No, char elem){
+    //se elemento for diferente de espaço em branco adiciona o mesmo no topo da pilha
+    if(elem != ' '){
+        No = alocaNo();
+        
+        No->notation = elem;
+        No->top = *top;
+
+        *top = No;
+    }
+}
+
+struct pilha *desempilhar(struct pilha **top){
+    struct pilha *aux, *out;
+    out = alocaNo();
+
+    if (*top != NULL){
+        aux = *top;
+
+        *out = **top;
+
+        *top = (*top)->top;
+
+        free(aux);
+    }
+
+    return out;
+}
+
+void imprimir(struct pilha *top){
+    if(top != NULL){
+        printf("%c\n", top->notation);
+        imprimir(top->top);
+    }
+}
+
+///////////////////////////////////////
 //i =0 uni = 1
 void convert_to_num(char str[4], int i, int tam, int uni, int *valor){
     if(tam  >= i){
@@ -61,8 +110,13 @@ int valid_expression(char s[100],int i, int tam){
 }
 
 int main(){
+    struct  pilha *pilha_operandos, *pilha_operadores, *No;
+
+    pilha_operandos = NULL;
+    pilha_operadores = NULL;
+
     char infixa[100];
-    int tam, valid;
+    int  tam, valid;
     do
     {
         printf("Digite a expressão infixa: ");
@@ -74,14 +128,22 @@ int main(){
     } while (strlen(infixa) > 100);
 
     tam = strlen(infixa);
-    valid = valid_expression(infixa , 0, tam);
-    if(valid){
-        printf("Expressao eh Valida!\n");
-    }else{
-        printf("Expressao NAO eh Valida\n");
+    //valid = valid_expression(infixa , 0, tam);
+    //if(valid){
+    //    printf("Expressao eh Valida!\n");
+    //}else{
+    //    printf("Expressao NAO eh Valida\n");
+    //}
+    
+    for(int i=0; i < tam; i++){
+        if(infixa[i] != ' '){
+            
+            empilhar(&pilha_operadores, No, infixa[i]);
+
+        }
     }
-    
-    
+    imprimir(pilha_operadores);
+
 
     return 0;
 }

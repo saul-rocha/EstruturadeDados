@@ -59,11 +59,16 @@ void add_fila(struct alunos **I, struct alunos **F, struct alunos *No){
 
 //retira o primeiro da fila
 
-void out_fila(struct alunos **I, struct alunos **F){
-    struct alunos *aux;
+struct alunos *out_fila(struct alunos **I, struct alunos **F){
+    struct alunos *aux, *aux2;
     //verifica se a fila está vazia
     if(I != NULL){
         aux = *I;// aux recebe o endereço de I
+        aux2->matricula = (*I)->matricula;
+        strcpy(aux2->nome,(*I)->nome);
+        aux2->ano_escolar = (*I)->ano_escolar;
+        aux2->idade = (*I)->idade;
+        aux2->prox = (*I)->prox;
         if ((*I)->prox != NULL)
         {
             *I = (*I)->prox;//se o proximo da fila não for NULL, I recebe o endereço do proximo
