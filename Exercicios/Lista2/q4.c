@@ -55,10 +55,11 @@ struct pilha *desempilhar(struct pilha **top){
     return out;
 }
 
+
 //imprimir provisório
 void imprimir(struct pilha *top){
     if(top != NULL){
-        printf("%s\n", top->notation);
+        printf("%s", top->notation);
         imprimir(top->top);
     }
     setbuf(stdin,NULL);
@@ -122,7 +123,33 @@ int valid_expression(char s[100], int i){
 }
 
 
-
+void posfixa(struct pilha **top1, struct pilha **top2){
+    struct pilha *aux;
+    aux = alocaNo();
+    while(*top1 != NULL){
+        if (isdigit((*top1)->notation[0])){//se for numero
+            aux = desempilhar(top1);
+            posfixa(top1,top2);
+            printf("%s", aux->notation);
+        }else if((*top1)->notation[0] == ')'){
+            while((*top1)->notation[0] != '('){
+                aux = desempilhar(top1);
+                printf("%s", aux->notation);
+            }
+            aux = desempilhar(top2);
+            printf("%s", aux->notation);
+            posfixa(top1, top2);
+        }else{
+            aux = desempilhar(top1);
+        }
+        
+        
+    }
+    while(*top2 !=NULL){
+        aux = desempilhar(top2); 
+        printf("%s",aux->notation);
+    }
+}
 
 int main(){
     struct  pilha *pilha_operandos, *pilha_operadores, *No;
@@ -191,15 +218,17 @@ int main(){
 
                 }
             }
-        
+
+            
             
 
     }else{
         printf("Expressao NAO eh Valida\n");
     }
-    
-    imprimir(pilha_operandos);
-    imprimir(pilha_operadores);
+    posfixa(&pilha_operandos, &pilha_operadores);
+    //imprimir(pilha_operandos);
+    //printf("\n");
+    //imprimir(pilha_operadores);
 
 
     return 0;
