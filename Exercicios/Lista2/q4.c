@@ -2,33 +2,36 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <math.h>
 
 //////////////////////////////////////
 struct pilha
 {
-    char notation;
+    char notation[4];
     struct pilha *top;
 };
+
 
 
 struct pilha *alocaNo(){
     struct pilha *new;
 
     new = (struct pilha *)malloc(sizeof(struct pilha));
-
-    new->notation = '\0';
+    for(int i =0; i < 4; i++){
+        new->notation[i] = '\0';    
+    }
     new->top = NULL;
 
     return new;
 }
 
 
-void empilhar(struct pilha **top, struct pilha *No, char elem){
+void empilhar(struct pilha **top, struct pilha *No, char elem[4]){
     //se elemento for diferente de espaço em branco adiciona o mesmo no topo da pilha
-    if(elem != ' '){
+    if(elem[0] != ' '){
         No = alocaNo();
         
-        No->notation = elem;
+        strcpy(No->notation,elem);
         No->top = *top;
 
         *top = No;
@@ -55,7 +58,7 @@ struct pilha *desempilhar(struct pilha **top){
 //imprimir provisório
 void imprimir(struct pilha *top){
     if(top != NULL){
-        printf("%c\n", top->notation);
+        printf("%s\n", top->notation);
         imprimir(top->top);
     }
     setbuf(stdin,NULL);
@@ -75,6 +78,19 @@ void convert_to_num(char str[4], int i, int tam, int uni, int *valor){
     }
     
 }
+void convert_to_str(char str[4], int i, int tam, int uni, int valor){
+    if(i < tam){
+        if(valor > 9){
+            str[i] = valor / uni;
+            valor = valor % uni;
+            i++;
+            uni /= 10;
+            convert_to_str(str, i, tam, uni, valor);
+        }
+        str[i] = valor;
+    }
+    
+}
 
 int is_operator(char o){
     int res = 0;
@@ -83,7 +99,7 @@ int is_operator(char o){
         res = 1;
     }
 
-    return 0;
+    return res;
 }
 
 
@@ -107,14 +123,15 @@ int valid_expression(char s[100], int i){
 
 
 
+
 int main(){
     struct  pilha *pilha_operandos, *pilha_operadores, *No;
 
     pilha_operandos = NULL;
     pilha_operadores = NULL;
 
-    char infixa[100];
-    int  tam=0, valid;
+    char infixa[100], num[4];
+    int  tam=0, valid, numero, cont, flag;
     do
     {
         printf("Digite a expressão infixa: ");
@@ -134,20 +151,54 @@ int main(){
     printf("%d\n", tam);
     setbuf(stdin,NULL);
     valid = valid_expression(infixa , 1);
+
     if(valid){
         printf("Expressao eh Valida!\n");
 
+
+            //cria pos-fixa
             for(int i=0; infixa[i] != '\0'; i++){
                 if(infixa[i] != ' '){
-                    
-                    empilhar(&pilha_operadores, No, infixa[i]);
+
+                    cont = 0;
+                    if(isdigit(infixa[i])){
+                        while(isdigit(infixa[i])){
+                            num[cont] = infixa[i];
+                            cont++;
+                            i++;
+                        }
+                        convert_to_num(num,0,strlen(num),1,&numero);
+                        if(numero < 1001){
+
+                            empilhar(&pilha_operandos, No, num);
+                                
+                            num[0] = num[1] = num[2] = num[3] = '\0';
+
+                        }
+
+                    }else if(is_operator(infixa[i])){
+                       
+                        num[0] = infixa[i];
+
+                        empilhar(&pilha_operadores, No, num);
+                        num[0] = '\0';
+
+                    }else if(infixa[i] == '(' || infixa[i] == ')'){
+                        num[0] = infixa[i];
+                        empilhar(&pilha_operandos, No, num);
+                        num[0] = '\0';
+                    }
 
                 }
             }
+        
+            
+
     }else{
         printf("Expressao NAO eh Valida\n");
     }
     
+    imprimir(pilha_operandos);
     imprimir(pilha_operadores);
 
 
