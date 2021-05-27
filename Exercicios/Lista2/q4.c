@@ -113,7 +113,7 @@ int precedence(char symbol)
 	}
 	else
 	{
-		rer = 0;
+		res = 0;
 	}
 
     return res;
