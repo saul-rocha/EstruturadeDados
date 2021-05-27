@@ -12,7 +12,6 @@ struct pilha
 };
 
 
-
 struct pilha *alocaNo(){
     struct pilha *new;
 
@@ -56,14 +55,6 @@ struct pilha *desempilhar(struct pilha **top){
 }
 
 
-//imprimir provisório
-void imprimir(struct pilha *top){
-    if(top != NULL){
-        printf("%s", top->notation);
-        imprimir(top->top);
-    }
-    setbuf(stdin,NULL);
-}
 
 ///////////////////////////////////////
 //i =0 uni = 1
@@ -103,62 +94,48 @@ int is_operator(char o){
     return res;
 }
 
+//retorna a precedencia
+int precedence(char symbol)
+{
+    int res;
+    
+	if(symbol == '(')
+	{
+		res = 3;
+	}
+	else if(symbol == '*' || symbol == '/')
+	{
+		res = 2;
+	}
+	else if(symbol == '+' || symbol == '-')          
+	{
+		res = 1;
+	}
+	else
+	{
+		rer = 0;
+	}
 
-// i inicia de 1
-int valid_expression(char s[100], int i){
-    int res=1;
-    if(is_operator(s[0]) || (!isdigit(s[0]) && s[0] != '(')){
-        res = 0;
-    }else{//se ultimo elemento é um fecha parêntese ou digito
-            res = 1;
-            while(res != 0 && s[i] != '\0'){
-                
-                if(s[i] == ' ' || (isdigit(s[i]) && ((s[i+1] == ' ') || (isdigit(s[i+1])))) || is_operator(s[i]) && (s[i+1] == ' ')){//se na posição i for digito/ouperador o proximo dever ser um espaço ou outro digito
-                    res = 1;
-                }
-                i++;
-            }
-        }
     return res;
 }
 
+// i inicia de 1
+int valid_expression(char s[100], int i){
 
-void posfixa(struct pilha **top1, struct pilha **top2){
-    struct pilha *aux;
-    aux = alocaNo();
-    while(*top1 != NULL){
-        if (isdigit((*top1)->notation[0])){//se for numero
-            aux = desempilhar(top1);
-            posfixa(top1,top2);
-            printf("%s", aux->notation);
-        }else if((*top1)->notation[0] == ')'){
-            while((*top1)->notation[0] != '('){
-                aux = desempilhar(top1);
-                printf("%s", aux->notation);
-            }
-            aux = desempilhar(top2);
-            printf("%s", aux->notation);
-            posfixa(top1, top2);
-        }else{
-            aux = desempilhar(top1);
-        }
-        
-        
-    }
-    while(*top2 !=NULL){
-        aux = desempilhar(top2); 
-        printf("%s",aux->notation);
-    }
 }
 
+
+
+
 int main(){
-    struct  pilha *pilha_operandos, *pilha_operadores, *No;
+    struct  pilha *pilha_operandos, *pilha_operadores;
 
     pilha_operandos = NULL;
     pilha_operadores = NULL;
 
-    char infixa[100], num[4];
-    int  tam=0, valid, numero, cont, flag;
+    char infixa[100];
+    int  valid, tam=0;
+    //ler a expressão
     do
     {
         printf("Digite a expressão infixa: ");
@@ -176,59 +153,20 @@ int main(){
 
 
     printf("%d\n", tam);
-    setbuf(stdin,NULL);
+    //valida a expressão
     valid = valid_expression(infixa , 1);
 
     if(valid){
         printf("Expressao eh Valida!\n");
 
-
-            //cria pos-fixa
-            for(int i=0; infixa[i] != '\0'; i++){
-                if(infixa[i] != ' '){
-
-                    cont = 0;
-                    if(isdigit(infixa[i])){
-                        while(isdigit(infixa[i])){
-                            num[cont] = infixa[i];
-                            cont++;
-                            i++;
-                        }
-                        convert_to_num(num,0,strlen(num),1,&numero);
-                        if(numero < 1001){
-
-                            empilhar(&pilha_operandos, No, num);
-                                
-                            num[0] = num[1] = num[2] = num[3] = '\0';
-
-                        }
-
-                    }else if(is_operator(infixa[i])){
-                       
-                        num[0] = infixa[i];
-
-                        empilhar(&pilha_operadores, No, num);
-                        num[0] = '\0';
-
-                    }else if(infixa[i] == '(' || infixa[i] == ')'){
-                        num[0] = infixa[i];
-                        empilhar(&pilha_operandos, No, num);
-                        num[0] = '\0';
-                    }
-
-                }
-            }
-
-            
-            
+        pilha_posfixa(infixa, &pilha_operandos, &pilha_operadores);
 
     }else{
         printf("Expressao NAO eh Valida\n");
     }
-    posfixa(&pilha_operandos, &pilha_operadores);
-    //imprimir(pilha_operandos);
-    //printf("\n");
-    //imprimir(pilha_operadores);
+    imprimir(pilha_operandos);
+    printf("\n");
+    imprimir(pilha_operadores);
 
 
     return 0;

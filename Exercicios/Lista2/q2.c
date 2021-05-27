@@ -64,7 +64,7 @@ struct carro saida(struct carro **I, struct carro **F, int placa, int *cont, int
         //deixa pendente a realocação dos carros
         while(first_placa != (*I)->placa){
             aux2 = *I;
-            aux = aloncaNo((*I)->placa, (*I)->manobras+1);
+            aux = aloncaNo((*I)->placa, (*I)->manobras);
             *I = (*I)->prox;
             entrada(I, F, aux);
             free(aux2);
