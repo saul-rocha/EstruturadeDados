@@ -111,12 +111,60 @@ int precedence(char symbol)
     return res;
 }
 
+int verifica_exp(char exp[100]){
+    int res = 0;
+    int i=0, qtd_open=0, qtd_closed=0, tam;
+
+    
+    //se nãao inciar com digito ou ( a expressão é inválida
+    if(isdigit(exp[0]) || exp[0] == '('){
+        res = 1;
+        while(exp[i] != '\0' && res != 0){
+            printf("deu\n   ");//1,2,
+            if(isdigit(exp[i]) && ((isdigit(exp[i+1]) || exp[i+1] == ' ' || exp[i+1] == '\0'))){
+                i++;
+                if(exp[i] == ' ' && isdigit(exp[i+1])){
+                    res = 0;    
+                }
+            }else if(exp[i] == ' ' && exp[i+1] != ' '){// se for um espaço em branco e o proximo char for diferente de um espaço
+                i++;
+            }else if(is_operator(exp[i]) && (exp[i+1] == ' ' || exp[i+1] == '\0')){//sinal deve ser separado por espaço
+                i++;
+                if(is_operator(exp[i+1])){//se o proximo do proximo char for igual a um operador
+                    res = 0;    
+                }
+            }else if(exp[i] == '(' && exp[i+1] == ' '){
+                i++;
+                qtd_open++;
+            }else if(exp[i] == ')' && (exp[i+1] == ' ' || exp[i+1] == '\0')){
+                i++;
+                qtd_closed++;
+            }
+            else{
+                res = 0;
+            }
+        }
+
+        if(exp[i] == '\0' && qtd_open == qtd_closed){
+            res = 1;
+        }else{
+            res = 0;
+        }
+
+    }else{
+        res = 0;
+    }
+
+    return res;
+}
+
 void infix_posfix(char infix[100], struct pilha *p, char posfix[100]){
     int i, j;
     char item_infix, operator;
 
     empilhar(p, '('); // add um ( na pilha de operadores
-    strcat(infix,")");
+    strcat(infix," )"); // add um ) no fim da sttring infixa , poiss para cada expressão
+                        // o final da mesma é delimitada por um ) mesmo que o usuário não tenha colocado
 
     i = 0;
     j = 0;  
@@ -177,7 +225,7 @@ int main(){
     struct pilha p;
     p.top = -1;
 
-    int tam=0;
+    int tam=0, verif;
     char infixa[100], posfixa[100];
 
     do
@@ -186,20 +234,34 @@ int main(){
         scanf("%[^\n]", infixa);//forma do scanf ler espaços
         setbuf(stdin,NULL);
         for(int i=0;infixa[i] != '\0' ;i++){
-            
-            tam++;
-            
+            if (infixa[i] != ' '){
+                if(isdigit(infixa[i])){         
+                    while(infixa[i] != ' '){//percorre todo o numero caso ele tenha mais de umaa unidade
+                        i++;
+                    }
+                }
+
+                tam ++;
+                
+
+            }
+  
         }
         if(tam > 100){
             printf("Expressão muito grande!\nTente novamente\n");
         }
     } while (tam > 100);
 
-    infix_posfix(infixa, &p, posfixa);
-
-    printf("%s", infixa);
-    printf("\n");
-    printf("%s", posfixa);
+    verif = verifica_exp(infixa);
+    if(verif){
+        printf("Eh valida!!\n");
+        printf("%s", infixa);
+        printf("\n");
+        infix_posfix(infixa, &p, posfixa);
+        printf("%s", posfixa);
+    }else{
+        printf("NAO eh valida!!\n");
+    }
 
     return 0;
 
