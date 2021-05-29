@@ -53,7 +53,7 @@ char desempilhar(struct pilha *p){
 }
 ///////////////////////////////////////////////////////
 
-//i =0 uni = 1
+//uni = 1
 void convert_to_num(char str[4], int tam, int uni, int *valor){
     int n;
     if(tam  >= 0){
