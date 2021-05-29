@@ -54,14 +54,15 @@ char desempilhar(struct pilha *p){
 ///////////////////////////////////////////////////////
 
 //i =0 uni = 1
-void convert_to_num(char str[4], int i, int tam, int uni, int *valor){
-    if(tam  >= i){
+void convert_to_num(char str[4], int tam, int uni, int *valor){
+    int n;
+    if(tam  >= 0){
         if(isdigit(str[tam])){
-            *valor += str[tam] - 48;
-            *valor = *valor * uni;
+            n = str[tam] - 48;
+            *valor +=  n * uni;
             tam--;
             uni *= 10;
-            convert_to_num(str, i, tam, uni, valor);
+            convert_to_num(str, tam, uni, valor);
         }
     }
     
@@ -120,7 +121,6 @@ int verifica_exp(char exp[100]){
     if(isdigit(exp[0]) || exp[0] == '('){
         res = 1;
         while(exp[i] != '\0' && res != 0){
-            printf("deu\n   ");//1,2,
             if(isdigit(exp[i]) && ((isdigit(exp[i+1]) || exp[i+1] == ' ' || exp[i+1] == '\0'))){
                 i++;
                 if(exp[i] == ' ' && isdigit(exp[i+1])){
@@ -225,7 +225,7 @@ int main(){
     struct pilha p;
     p.top = -1;
 
-    int tam=0, verif;
+    int tam=0, verif, i=0;
     char infixa[100], posfixa[100];
 
     do
@@ -233,20 +233,18 @@ int main(){
         printf("Digite a expressão infixa: ");
         scanf("%[^\n]", infixa);//forma do scanf ler espaços
         setbuf(stdin,NULL);
-        for(int i=0;infixa[i] != '\0' ;i++){
+
+        while(infixa[i] != '\0'){
             if (infixa[i] != ' '){
-                if(isdigit(infixa[i])){         
-                    while(infixa[i] != ' '){//percorre todo o numero caso ele tenha mais de umaa unidade
-                        i++;
-                    }
-                }
-
-                tam ++;
-                
-
+                while(isdigit(infixa[i])){
+                    i++;
+                }  
+                tam ++;     
             }
-  
+            i++;    
+           
         }
+        printf("%d tam\n", tam);
         if(tam > 100){
             printf("Expressão muito grande!\nTente novamente\n");
         }
@@ -255,7 +253,6 @@ int main(){
     verif = verifica_exp(infixa);
     if(verif){
         printf("Eh valida!!\n");
-        printf("%s", infixa);
         printf("\n");
         infix_posfix(infixa, &p, posfixa);
         printf("%s", posfixa);

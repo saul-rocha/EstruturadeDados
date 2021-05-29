@@ -7,34 +7,18 @@
 //////////////////////////////////////
 struct pilha
 {
-    char notation[4];
+    char notation;
     struct pilha *top;
 };
 
 
 struct pilha *alocaNo(){
-    struct pilha *new;
-
-    new = (struct pilha *)malloc(sizeof(struct pilha));
-    for(int i =0; i < 4; i++){
-        new->notation[i] = '\0';    
-    }
-    new->top = NULL;
-
-    return new;
+    
 }
 
 
-void empilhar(struct pilha **top, struct pilha *No, char elem[4]){
-    //se elemento for diferente de espaço em branco adiciona o mesmo no topo da pilha
-    if(elem[0] != ' '){
-        No = alocaNo();
-        
-        strcpy(No->notation,elem);
-        No->top = *top;
-
-        *top = No;
-    }
+void empilhar(struct pilha **top, struct pilha *No, char elem){
+    
 }
 
 struct pilha *desempilhar(struct pilha **top){
@@ -134,39 +118,29 @@ int main(){
     pilha_operadores = NULL;
 
     char infixa[100];
-    int  valid, tam=0;
+    int  valid, tam=0, i=0;
     //ler a expressão
     do
     {
         printf("Digite a expressão infixa: ");
         scanf("%[^\n]", infixa);//forma do scanf ler espaços
         setbuf(stdin,NULL);
-        for(int i=0;infixa[i] != '\0' ;i++){
-            if(infixa[i] != ' '){
-                tam++;
+
+        while(infixa[i] != '\0'){
+            if (infixa[i] != ' '){
+                while(isdigit(infixa[i])){
+                    i++;
+                }  
+                tam ++;     
             }
+            i++;    
+           
         }
+        printf("%d tam\n", tam);
         if(tam > 100){
             printf("Expressão muito grande!\nTente novamente\n");
         }
     } while (tam > 100);
-
-
-    printf("%d\n", tam);
-    //valida a expressão
-    valid = valid_expression(infixa , 1);
-
-    if(valid){
-        printf("Expressao eh Valida!\n");
-
-        pilha_posfixa(infixa, &pilha_operandos, &pilha_operadores);
-
-    }else{
-        printf("Expressao NAO eh Valida\n");
-    }
-    imprimir(pilha_operandos);
-    printf("\n");
-    imprimir(pilha_operadores);
 
 
     return 0;
