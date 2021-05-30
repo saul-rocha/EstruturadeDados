@@ -7,7 +7,7 @@ struct fila_process{
     struct fila_process *prox;
 };
 
-
+//PRIORIDADE 3 TEM MAIOR PRIORIDADE
 
 ///////////////////////// BASICS ///////////////////////////////
 
@@ -149,10 +149,83 @@ void mostrar_processos(struct fila_process *I){
 
 
 void prox_process(struct fila_process *begin1, struct fila_process *begin2, struct fila_process *begin3){
+    printf("PROXIMO PROCESSO\n");
     if(begin3 != NULL){
-        
+        printf("\n------------------\nNumero do Processo: %d\nTempo do Processo: %d\nPrioridade do Processo: %d\n------------------\n", begin3->id,begin3->time, begin3->priority);
+    } else if(begin2 != NULL){
+        printf("\n------------------\nNumero do Processo: %d\nTempo do Processo: %d\nPrioridade do Processo: %d\n------------------\n", begin2->id,begin2->time, begin2->priority);
+    }else if(begin1 != NULL){
+        printf("\n------------------\nNumero do Processo: %d\nTempo do Processo: %d\nPrioridade do Processo: %d\n------------------\n", begin1->id,begin1->time, begin1->priority);
     }
 }
+
+int qtd_processos(struct fila_process *begin){
+    struct fila_process *aux;
+    int qtd=0;
+    aux = begin;
+    while(aux != NULL){
+        qtd++;
+        aux = aux->prox;
+    }
+
+    return qtd;
+}
+
+int tempo_fila(struct fila_process *begin){
+    struct fila_process *aux;
+    int time=0;
+
+    aux = begin;
+    while(aux != NULL && aux->priority != 1){
+        if(aux->time >= 2){
+            time = time + 2;
+        }else{
+            time = time + aux->time;
+        }
+        aux = aux->prox;
+    }
+    //caso seja a fila de prioridade 1
+    while(aux != NULL && aux->priority == 1){
+        time = time + aux->time;
+        aux = aux->prox;
+    }
+    
+    return time;
+}
+
+int tempo_ate_processo(struct fila_process *begin1, struct fila_process *begin2,struct fila_process *begin3, int id_processo){
+    struct fila_process *aux;
+    int tempo=0;
+
+    
+    if(begin3 != NULL){
+        aux = begin3;
+        while(aux->id != id_processo ){
+            tempo = tempo + aux->time;
+            aux = aux->prox;
+        }
+    }else if(begin2 != NULL){
+        aux = begin2;
+        while(aux->id != id_processo ){
+            tempo = tempo + aux->time;
+            aux = aux->prox;
+        }
+    }else if(begin1 != NULL){
+        aux = begin1;
+        while(aux->id != id_processo ){
+            tempo = tempo + aux->time;
+            aux = aux->prox;
+        }
+    }else{
+        tempo = -1;
+    }
+
+
+
+    return tempo;
+
+}
+
 
 int menu(){
     int opcao;
@@ -168,7 +241,7 @@ int menu(){
 int main(){
     struct fila_process *I1, *I2, *I3, *F1, *F2, *F3, *No;
 
-    int op, op2, id_saiu=-1;
+    int op, op2, op3, id_saiu=-1, qtd, tempo, id;
 
     I1 = NULL;
     F1 = NULL;
@@ -217,6 +290,69 @@ int main(){
             mostrar_processos(I3);
             break;
         
+        case 4:
+            prox_process(I1, I2, I3);
+            break;
+
+        case 5:
+            qtd = qtd_processos(I1);
+            printf("Processos na Fila 1: %d\n", qtd);
+
+            qtd = qtd_processos(I2);
+            printf("Processos na Fila 2: %d\n", qtd);
+
+            qtd = qtd_processos(I3);
+            printf("Processos na Fila 3: %d\n", qtd);
+
+            break;
+        case 6:
+            do{
+                printf("1- Fila 1\n2- Fila 2\n3- Fila 3\n");
+                scanf("%d", &op3);
+                if(op3 > 3 || op3 < 1){
+                    printf("fila não existe!\n");
+                }
+            }while(op3 > 3 || op3 < 1);
+
+            if(op3 == 1){
+                tempo = tempo_fila(I1);
+                printf("%d s\n", tempo);
+            }else if( op3 == 2){
+                tempo = tempo_fila(I2);
+                printf("%d s\n", tempo);
+
+            }else {
+                tempo = tempo_fila(I3);
+                printf("%d s\n", tempo);
+            }
+            
+            break;
+
+        case 7:
+            printf("Numero do Processo: ");
+            scanf("%d", &id);
+            tempo = tempo_ate_processo(I1,I2,I3, id);
+            if(id != -1){
+                printf("Tempo restante: %d s\n", tempo);
+            }else{
+                printf("Processo não encontrado!\n");
+            }
+            break;
+
+        case 8:
+            tempo = tempo_fila(I1);
+            printf("Tempo para processar fila 1: %d\n", tempo);
+
+            tempo = tempo_fila(I2);
+            printf("Tempo para processar fila 2: %d\n", tempo);
+
+            tempo = tempo_fila(I3);
+            printf("Tempo para processar fila 3: %d\n", tempo);
+
+            tempo = tempo_fila(I1) +  tempo_fila(I2) + tempo_fila(I3);
+            printf("Tempo para processar todas as filas: %d\n", tempo);
+
+            break;
         case 0:
             printf("Saindo...\n");
             break;
