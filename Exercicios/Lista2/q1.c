@@ -4,11 +4,11 @@
 
 // fila de carros com 10 vagas, quantidades de manobras feitas, inicio e  fim da fila
 struct Carro{
-    int placa[10], manobras[10], inicio, fim;
+    int placa[10], manobras[10], inicio, fim;   
 };
 
 //coloca um carro na fila
-int entrada(struct Carro *c, int placa){
+int entrada(struct Carro c[10], int placa){    
     int res;
     if(c->inicio == -1 && c->fim == -1){
         c->placa[c->inicio+1] = placa;
@@ -32,7 +32,7 @@ int entrada(struct Carro *c, int placa){
 //retira um carro
 int saida(struct Carro c[10], int placa, int *manob, int primeiro){
     int aux, aux2, cont=0, i;
-    if(c->inicio <= c->fim){
+    if(c->inicio <= c->fim){    
         //quando encontrar a placa diminui a fila movimentando todos os carros em uma posição
         if(c->placa[c->inicio] == placa){
             *manob = c->manobras[c->inicio];
@@ -82,7 +82,8 @@ int saida(struct Carro c[10], int placa, int *manob, int primeiro){
     return cont;
 }
 
-void imprime_fila(struct Carro *c){
+//função temporária para testes
+void imprime_fila(struct Carro c[10]){
     struct Carro aux;
 
     for (int i=0; i <= c->fim;i++){
@@ -95,7 +96,7 @@ void imprime_fila(struct Carro *c){
 char menu(){
     char op;
     
-    printf("E - Entrar carro  |  S - Sair Carro | I - Imprimir | 0 - Sair\n");
+    printf("E - Entrar carro  |  S - Sair Carro | 0 - Sair\n");
     scanf("%c", &op);
     setbuf(stdin,NULL);
 
@@ -132,7 +133,7 @@ int main(){
             setbuf(stdin,NULL);
             verifica = entrada(&carros, placa);
             if(verifica){
-                printf("Existe vaga\n%d entrou no escionamento!\n", placa);
+                printf("Existe vaga\n%d entrou no estacionamento!\n", placa);
             }else{
                 printf("Não existe vagas!\n");
             }

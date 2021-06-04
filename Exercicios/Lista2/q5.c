@@ -221,7 +221,6 @@ int tempo_ate_processo(struct fila_process *begin1, struct fila_process *begin2,
     }
 
 
-
     return tempo;
 
 }

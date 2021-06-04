@@ -29,7 +29,7 @@ void entrada(struct carro **I, struct carro **F, struct carro *No){
 
     if(*I == NULL){
         *I = No;
-        *F = No;
+        *F = No;    
     }else{
         (*F)->prox = No;
         *F = No;
@@ -75,7 +75,7 @@ struct carro saida(struct carro **I, struct carro **F, int placa, int *cont, int
 }
 
 
-//imprime fila
+//imprime fila função temporária para testes
 void imprime(struct carro *I){
     if (I != NULL){
         printf("%d ", (*I).placa);
@@ -87,7 +87,7 @@ void imprime(struct carro *I){
 char menu(){
     char op;
     
-    printf("E - Entrar carro  |  S - Sair Carro | I - Imprimir | 0 - Sair\n");
+    printf("E - Entrar carro  |  S - Sair Carro | 0 - Sair\n");
     scanf("%c", &op);
     setbuf(stdin,NULL);
 
@@ -106,7 +106,7 @@ int main(){
     F = NULL;
 
     do{
-        //está duplicando o menu :(
+        
         op = menu();
 
         switch (op)

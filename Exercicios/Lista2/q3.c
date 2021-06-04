@@ -53,7 +53,7 @@ char desempilhar(struct pilha *p){
 }
 ///////////////////////////////////////////////////////
 
-//uni = 1
+//não foi utilizada
 void convert_to_num(char str[4], int tam, int uni, int *valor){
     int n;
     if(tam  >= 0){
@@ -68,6 +68,7 @@ void convert_to_num(char str[4], int tam, int uni, int *valor){
     
 }
 
+//nao foi utilizada 
 void convert_to_str(char str[4], int i, int tam, int uni, int valor){
     if(i < tam){
         if(valor > 9){
@@ -244,7 +245,7 @@ int main(){
             i++;    
            
         }
-        printf("%d tam\n", tam);
+        
         if(tam > 100){
             printf("Expressão muito grande!\nTente novamente\n");
         }
@@ -255,7 +256,7 @@ int main(){
         printf("Eh valida!!\n");
         printf("\n");
         infix_posfix(infixa, &p, posfixa);
-        printf("%s", posfixa);
+        printf("%s\n", posfixa);
     }else{
         printf("NAO eh valida!!\n");
     }
