@@ -72,15 +72,17 @@ int desempilhar_cd(struct PilhaCD **top){
 
 //imprime toda a pilha de cds
 void imprimir_PilhaCDs(struct PilhaCD *top){
-    if(top != NULL){//quando top for NULL a pilha está vazia
+    struct PilhaCD *aux;
+    aux = top;
+    if(aux != NULL){//quando top for NULL a pilha está vazia
         printf("------------------\n");
         printf("Codigo: %d\n", (*top).cod);
         printf("Titulo: %s\n", (*top).titulo);
         printf("Artista: %s\n", (*top).artista);
-        printf("Ano: %d\n", (*top).ano);
+        printf("Ano: %d\n", (*aux).ano);
         printf("------------------\n");
 
-        imprimir_PilhaCDs((*top).ant);//chama recursivamente passando como parametro o endereço do cd anterior(proximo da pilha)
+        imprimir_PilhaCDs((*aux).ant);//chama recursivamente passando como parametro o endereço do cd anterior(proximo da pilha)
     }
     
 }
