@@ -23,7 +23,7 @@ void insere(struct Lista **begin, struct Lista **end, struct Lista *No){
     struct Lista *aux, *ant;
 
     aux = *begin;
-    //insere no fim
+    //insere no inicio
     if(*begin == NULL){
         *begin = No;
         *end = No;
