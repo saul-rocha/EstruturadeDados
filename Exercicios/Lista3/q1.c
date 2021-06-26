@@ -382,6 +382,7 @@ int main(){
             printf("Em relacao a qual variavel? (1 p/ x || 2 p/ y || 3 p/ z): ");
             scanf("%d", &v);
             derivada_parcial(pol[esc1], v);
+            printf("\n");
             break;
         default:
             if(op != 0){
