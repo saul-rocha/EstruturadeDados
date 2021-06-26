@@ -34,7 +34,7 @@ struct Lista1 *aloca_lista(int c, int e){
 //insere elementos no polinomio
 void insere_elemento(struct Lista1 **begin, struct Lista1 *No){
 
-    struct Lista1 *aux, *ant;
+    struct Lista1 *aux;
 
     aux = *begin;
     //insere o primeiro elemento
