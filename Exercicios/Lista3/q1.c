@@ -75,33 +75,33 @@ void soma_polinomios(struct Lista1 *pol1, struct Lista1 *pol2){
     //soma x
     if(aux1->info->exp == aux2->info->exp){
         s = aux1->info->coeficente + aux2->info->coeficente;
-        printf("%dx^%d + ", s, aux1->info->exp);
+        printf("%dx^%d ", s, aux1->info->exp);
     }else{
         printf("%dx^%d + %dx^%d + ", aux1->info->coeficente, aux1->info->exp, aux2->info->coeficente, aux2->info->exp);
     }
     //soma y
     if((aux1->prox != pol1 && aux2->prox != pol2) && aux1->prox->info->exp == aux2->prox->info->exp){
         s = aux1->prox->info->coeficente + aux2->prox->info->coeficente;
-        printf("%dy^%d + ", s, aux1->prox->info->exp);
+        printf("+ %dy^%d ", s, aux1->prox->info->exp);
     }else if(aux1->prox != pol1 && aux2->prox == pol2){
-        printf("%dy^%d + ", aux1->prox->info->coeficente, aux1->prox->info->exp);
+        printf("+ %dy^%d ", aux1->prox->info->coeficente, aux1->prox->info->exp);
     }else if(aux1->prox == pol1 && aux2->prox != pol2){
-        printf("%dy^%d + ", aux2->prox->info->coeficente, aux2->prox->info->exp);
+        printf("+ %dy^%d ", aux2->prox->info->coeficente, aux2->prox->info->exp);
     }
     else if(aux1->prox != pol1 && aux2->prox != pol2){
-        printf("%dy^%d + %dy^%d + ", aux1->prox->info->coeficente, aux1->prox->info->exp, aux2->prox->info->coeficente, aux2->prox->info->exp);
+        printf("+ %dy^%d + %dy^%d ", aux1->prox->info->coeficente, aux1->prox->info->exp, aux2->prox->info->coeficente, aux2->prox->info->exp);
     }
     //soma z
     if((aux1->prox->prox != pol1 && aux2->prox->prox != pol2) && aux1->prox->prox->info->exp == aux2->prox->prox->info->exp){
         s = aux1->prox->prox->info->coeficente + aux2->prox->prox->info->coeficente;
-        printf("%dz^%d + ", s, aux1->prox->prox->info->exp);
+        printf("+ %dz^%d ", s, aux1->prox->prox->info->exp);
     }else if(aux1->prox->prox != pol1 && aux2->prox->prox == pol2){
-        printf("%dz^%d + ", aux1->prox->prox->info->coeficente, aux1->prox->prox->info->exp);
+        printf("+ %dz^%d ", aux1->prox->prox->info->coeficente, aux1->prox->prox->info->exp);
     }else if(aux1->prox->prox == pol1 && aux2->prox->prox != pol2){
-        printf("%dz^%d + ", aux2->prox->prox->info->coeficente, aux2->prox->prox->info->exp);
+        printf("+ %dz^%d ", aux2->prox->prox->info->coeficente, aux2->prox->prox->info->exp);
     }
     else if(aux1->prox->prox != pol1 && aux2->prox->prox != pol2){
-        printf("%dz^%d + %dz^%d + ", aux1->prox->prox->info->coeficente, aux1->prox->prox->info->exp, aux2->prox->prox->info->coeficente, aux2->prox->prox->info->exp);
+        printf("+ %dz^%d + %dz^%d ", aux1->prox->prox->info->coeficente, aux1->prox->prox->info->exp, aux2->prox->prox->info->coeficente, aux2->prox->prox->info->exp);
     }
     
 
@@ -123,33 +123,33 @@ void mult_polinomios(struct Lista1 *pol1, struct Lista1 *pol2){
     //multiplica x
     if(aux1->info->coeficente == aux2->info->coeficente){
         m = aux1->info->exp + aux2->info->exp;
-        printf("%dx^%d + ", aux1->info->coeficente, m);
+        printf("%dx^%d ", aux1->info->coeficente, m);
     }else{
-        printf("%dx^%d * %dx^%d + ", aux1->info->coeficente, aux1->info->exp, aux2->info->coeficente, aux2->info->exp);
+        printf("%dx^%d * %dx^%d ", aux1->info->coeficente, aux1->info->exp, aux2->info->coeficente, aux2->info->exp);
     }
     //multiplica y
     if((aux1->prox != pol1 && aux2->prox != pol2) && aux1->prox->info->coeficente == aux2->prox->info->coeficente){
         m = aux1->prox->info->exp + aux2->prox->info->exp;
-        printf("%dy^%d + ", aux1->prox->info->coeficente, m);
+        printf("+ %dy^%d ", aux1->prox->info->coeficente, m);
     }else if(aux1->prox != pol1 && aux2->prox == pol2){
-        printf("%dy^%d + ", aux1->prox->info->coeficente, aux1->prox->info->exp);
+        printf("+ %dy^%d ", aux1->prox->info->coeficente, aux1->prox->info->exp);
     }else if(aux1->prox == pol1 && aux2->prox != pol2){
-        printf("%dy^%d + ", aux2->prox->info->coeficente, aux2->prox->info->exp);
+        printf("+ %dy^%d ", aux2->prox->info->coeficente, aux2->prox->info->exp);
     }
     else if(aux1->prox != pol1 && aux2->prox != pol2){
-        printf("%dy^%d * %dy^%d \n", aux1->prox->info->coeficente, aux1->prox->info->exp, aux2->prox->info->coeficente, aux2->prox->info->exp);
+        printf("+ %dy^%d * %dy^%d ", aux1->prox->info->coeficente, aux1->prox->info->exp, aux2->prox->info->coeficente, aux2->prox->info->exp);
     }
     //multiplica z
     if((aux1->prox->prox != pol1 && aux2->prox->prox != pol2) && aux1->prox->prox->info->coeficente == aux2->prox->prox->info->coeficente){
         m = aux1->prox->prox->info->exp + aux2->prox->prox->info->exp;
-        printf("%dz^%d + ", aux1->prox->prox->info->coeficente, m);
+        printf("+ %dz^%d ", aux1->prox->prox->info->coeficente, m);
     }else if(aux1->prox->prox != pol1 && aux2->prox->prox == pol2){
-        printf("%dz^%d + ", aux1->prox->prox->info->coeficente, aux1->prox->prox->info->exp);
+        printf("+ %dz^%d ", aux1->prox->prox->info->coeficente, aux1->prox->prox->info->exp);
     }else if(aux1->prox->prox == pol1 && aux2->prox->prox != pol2){
-        printf("%dz^%d + ", aux2->prox->prox->info->coeficente, aux2->prox->prox->info->exp);
+        printf("+ %dz^%d ", aux2->prox->prox->info->coeficente, aux2->prox->prox->info->exp);
     }
     else if(aux1->prox->prox != pol1 && aux2->prox->prox != pol2){
-        printf("%dz^%d * %dz^%d\n", aux1->prox->prox->info->coeficente, aux1->prox->prox->info->exp, aux2->prox->prox->info->coeficente, aux2->prox->prox->info->exp);
+        printf("+ %dz^%d * %dz^%d ", aux1->prox->prox->info->coeficente, aux1->prox->prox->info->exp, aux2->prox->prox->info->coeficente, aux2->prox->prox->info->exp);
     }
 }
 
@@ -178,9 +178,65 @@ void avaliacao_poli(struct Lista1 *pol1, int x, int y, int z){
 }
 
 
+void representar_poli(struct Lista1 *pol){
+    struct Lista1 *aux;
+
+    aux = pol;
+
+    printf("%dx^%d ", aux->info->coeficente, aux->info->exp);
+    if(aux->prox != pol){
+        printf("+ %dy^%d ", aux->prox->info->coeficente, aux->prox->info->exp);
+        if(aux->prox->prox != pol){
+            printf("+ %dz^%d ", aux->prox->prox->info->coeficente, aux->prox->prox->info->exp);
+        }
+    }
+    
+}
+
+
+void derivada_parcial(struct Lista1 *pol, int xyz){
+    struct Lista1 *aux;
+
+    aux = pol;
+    //em f(x)
+    if(xyz == 1){
+        printf("%dx ", aux->info->exp);
+        if(aux->prox != pol){
+            printf("+ %dy^%d ", aux->prox->info->coeficente, aux->prox->info->exp);
+            if(aux->prox->prox != pol){
+                printf("+ %dz^%d ", aux->prox->prox->info->coeficente, aux->prox->prox->info->exp);
+            }
+        }
+    }
+//em f(y)
+    if(xyz == 2){
+        printf("%dy^%d ", aux->info->coeficente,aux->prox->info->exp);
+        if(aux->prox != pol){
+            printf("+ %dy ", aux->prox->info->exp);
+            if(aux->prox->prox != pol){
+                printf("+ %dz^%d ", aux->prox->prox->info->coeficente, aux->prox->prox->info->exp);
+            }
+        }
+    }
+//em f(z)
+    if(xyz == 3){
+        printf("%dy^%d ", aux->info->coeficente,aux->prox->info->exp);
+        if(aux->prox != pol){
+            printf("+ %dy^%d ", aux->prox->info->coeficente, aux->prox->info->exp);
+            if(aux->prox->prox != pol){
+                printf("+ %dz ", aux->prox->prox->info->exp);
+            }
+        }
+    }
+
+}
+
+
+
+
 int menu(){
     int op;
-    printf("1...Cadastrar Polinomios\n2...Somar Dois Polinomios\n3...Multiplicar Dois Polinomios\n0...Sair\n");
+    printf("1...Cadastrar Polinomios\n2...Somar Dois Polinomios\n3...Multiplicar Dois Polinomios\n4...Avaliar Polinomio\n5...Representacao de Um Polinomio\n6...Representacao de Todos os Polinomios\n7...Derivada Parcial\n0...Sair\n");
     scanf("%d", &op);
     setbuf(stdin, NULL);
     return op;
@@ -194,7 +250,7 @@ int main(){
     }
     soma = NULL;
 
-    int op, op1, i=0, esc1, esc2, x, y, z;
+    int op, op1, i=0, esc1, esc2, x, y, z,v;
     int coef, exp;
 
     do{
@@ -291,9 +347,46 @@ int main(){
                 }
             }
             avaliacao_poli(pol[esc1], x, y, z);
+            printf("\n");
 
             break;
+
+        case 5:
+            for(int a=0; a < i; a++){
+                printf("Polinomio %d\n", a);
+                imprimir(pol[a]);
+            }
+            printf("Escolha um polinomio: ");
+            scanf("%d", &esc1);
+            setbuf(stdin, NULL);
+            representar_poli(pol[esc1]);
+            printf("\n");
+            break;
+        
+        case 6:
+            for(int a=0; a < i; a++){
+                printf("Polinomio %d\n", a);
+                representar_poli(pol[a]);
+                printf("\n\n");
+            }  
+            break;
+        
+        case 7:
+            for(int a=0; a < i; a++){
+                printf("Polinomio %d\n", a);
+                imprimir(pol[a]);
+            }
+            printf("Escolha um polinomio: ");
+            scanf("%d", &esc1);
+
+            printf("Em relacao a qual variavel? (1 p/ x || 2 p/ y || 3 p/ z): ");
+            scanf("%d", &v);
+            derivada_parcial(pol[esc1], v);
+            break;
         default:
+            if(op != 0){
+                printf("Opcao Invalida!\n");
+            }
             break;
         }
     }while(op != 0);
