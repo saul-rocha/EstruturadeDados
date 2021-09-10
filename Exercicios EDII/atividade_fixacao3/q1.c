@@ -277,7 +277,7 @@ void imprimir_inorder(struct arv_series *root){
     }
 }
 
-
+//recebe a raiz da arvore de series por parametro e o codigo e imprime as informações de todas as temporadas de uma serie
 void imprimir_temporadas(struct arv_series *root, int codigo){
     
     if(root != NULL){
@@ -289,11 +289,12 @@ void imprimir_temporadas(struct arv_series *root, int codigo){
             imprimir_temporadas(root->right, codigo);
             
         }else{
-            imprimir(root->info.begin);
+            imprimir(root->info.begin);//chama a função imprimir que imprime toda a lista
         }
     }
 }
 
+//recebe a raiz de uma arvore de participantes e imprime uma arvore em pre ordem
 void imprimir_arv_part(struct arv_part *root){
     if(root != NULL){    
         printf("Personagem: %s\n", root->infopart.nm_personagem);
@@ -302,6 +303,7 @@ void imprimir_arv_part(struct arv_part *root){
     }
 }
 
+//recebe a raiz de uma arvore de series por parametro, o codigo e a temporada
 void imprimir_personagens(struct arv_series *root,int codigo, int temp){
     struct listaTemp *aux;
     if(root != NULL){
@@ -327,6 +329,44 @@ void imprimir_personagens(struct arv_series *root,int codigo, int temp){
     }
 }
 
+void percorre_arv_atorpersonagem(struct arv_part *root, char nome[100]){
+
+    
+    if(root != NULL){
+        
+        if(strcmp(root->infopart.nm_personagem, nome) == 0){
+            printf("Artista: %s\n", root->infopart.nm_artista); 
+        }else{
+            percorre_arv_atorpersonagem(root->left, nome);
+            percorre_arv_atorpersonagem(root->right, nome);
+        }
+    }
+}
+
+//recebe a raiz de uma arvore de series, o codigo da serie e o nome de um personagem
+// e imprime os artistas que interpretam o personagem em todas as temporadas
+void imprimir_artistas(struct arv_series *root, int codigo, char nome[100]){
+    struct listaTemp *aux;
+    if(root != NULL){
+
+        if(codigo < root->info.cod){
+            imprimir_artistas(root->left, codigo, nome);
+        }
+        if(codigo > root->info.cod){
+            imprimir_artistas(root->right, codigo, nome);
+            
+        }else{
+            aux = root->info.begin;
+            while(aux != NULL){
+                printf("Temporada: %d\n", aux->info_temp.nro);
+                percorre_arv_atorpersonagem(aux->info_temp.root_part, nome);
+                aux= aux->prox;
+            }
+        }
+    }
+
+}
+
 int menu(){
     int op;
     printf("1 - Listar Series\n2 - Imprimir Em Ordem\n3 - Imprimir Info Temporadas\n4 - Imprimir Persongens\n5 - Imprimir Artistas\n0 - Sair\n");
@@ -342,7 +382,7 @@ int main(){
     struct series serie;
     
     int continuar, escolha,codigo, temporada, inseriu=0, cont=0;
-    
+    char nome[100];
     root_series = NULL;
 
     do
@@ -394,6 +434,11 @@ int main(){
             imprimir_personagens(root_series, codigo, temporada);
             break;
         case 5:
+            printf("Codigo da Serie: ");
+            scanf("%d", &codigo);
+            printf("Nome do Personagem: ");
+            scanf("%s", nome);
+            imprimir_artistas(root_series, codigo, nome);
             break;
         default:
             if(escolha != 0){
