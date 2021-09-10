@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 
+
 struct participantes{
     char nm_artista[100], nm_personagem[100], decription[200];
 };
@@ -34,13 +35,80 @@ struct arv_series{
     struct arv_series *left, *right;
 };
 
+//////PARTICIPANTES
+
+//aloca memoria e adiciona as informações do participante
+struct arv_part *aloca_arv_participantes(struct participantes info){
+    struct arv_part *new;
+    new = NULL;
+
+    new = (struct arv_part*)malloc(sizeof(struct arv_part));
+
+    new->infopart = info;
+    new->left = NULL;
+    new->right = NULL;
+
+    return new;
+}
+
+//compara duas strings
+int compare_strings(char s1[100], char s2[100]){
+	int i = 0, j = 0, res = -1;
+	while(res == -1 && s1[i] != '\0' && s2[j] != '\0'){
+        if(tolower(s1[i]) < tolower(s2[j])){//como podem ser palavras 
+            //maisculas e minusculas a função tolower transformara todas em minusculas
+            res = 0;
+        }
+        else if(tolower(s1[i]) > tolower(s2[j])){
+            res = 1;
+        }
+        i++;
+        j++;
+    }
+	//caso sejam igual entra em uma dessas condições
+    if(strlen(s1) < strlen(s2)){
+        res = 0;
+    }
+    if(strlen(s1) > strlen(s2)){
+        res = 1;
+    }
+	return res;
+    // retona 0 se string1 for menor que string2 e 1 caso contrario
+}
+//insere um particpante na arvore e reetorna o endereço onde onde foi inserido na arvore
+//recebe a raiz da arvore por referencia como parametro e o participante a ser adicionado
+int inserir_arv_part(struct arv_part **root, struct arv_part *No){
+    int res=0, str;
+
+    if(*root == NULL){
+        *root = No;
+        res = 1;
+    }else{
+        str = compare_strings(No->infopart.nm_personagem, (**root).infopart.nm_personagem);
+        if(str == 0){
+            res = inserir_arv_part(&(**root).left, No);
+        }else if (str == 1){
+            res = inserir_arv_part(&(**root).right, No);
+        }
+    }
+    return res;
+}
+///////////////////////////////////////
+
 
 /* BASICS FUNCTIONS LIST*/
 
 // aloca um elemento
-struct listaTemp *aloca_lista(int numero,int qtd_episodio, char titulo[100], int ano, struct arv_part *root_arv_part){
+struct listaTemp *aloca_lista(int numero,int qtd_episodio, char titulo[100], int ano){
     struct listaTemp *new;
+    struct arv_part *root_part, *No_part;
+
+    struct participantes participante;
+    
+    int continuar=0, inseriu=0;
+
     new = NULL;
+    root_part = NULL;
     
     new = (struct listaTemp*)malloc(sizeof(struct listaTemp));
 
@@ -49,9 +117,44 @@ struct listaTemp *aloca_lista(int numero,int qtd_episodio, char titulo[100], int
     new->info_temp.qtd_ep = qtd_episodio;
     new->info_temp.year = ano;
 
-    new->info_temp.root_part = root_arv_part;
 
+    //insere os participantes da serie na temporada
+    do{
+        printf("Nome do Artista: ");
+        scanf("%s", participante.nm_artista);
+        printf("Nome do Personagem: ");
+        scanf("%s", participante.nm_personagem);
+        printf("Descricao: ");
+        scanf("%s", participante.decription);
+        setbuf(stdin, NULL);
+
+        No_part = aloca_arv_participantes(participante);
+        inseriu = inserir_arv_part(&root_part, No_part);
+
+        while(inseriu != 1){
+            printf("\nparticipante ja existe!Deseja adicionar outro?(1 - SIM || 0 - NAO)");
+            scanf("%d", &continuar);
+            setbuf(stdin, NULL);
+            if(continuar == 1){
+                printf("Nome do Artista: ");
+                scanf("%s", participante.nm_artista);
+                printf("Nome do Personagem: ");
+                scanf("%s", participante.nm_personagem);
+                printf("Descricao: ");
+                scanf("%s", participante.decription);
+                setbuf(stdin, NULL);
+
+                No_part = aloca_arv_participantes(participante);
+                inseriu = inserir_arv_part(&root_part, No_part);
+            }
+
+        }
+        printf("Adicionar outro participante? (1 - SIM || 0 - NAO):  ");
+        scanf("%d", &continuar);
+        setbuf(stdin, NULL);
+    }while(continuar != 0);
     
+    new->info_temp.root_part = root_part;
 
     new->prox = NULL;
 
@@ -90,9 +193,9 @@ void insere(struct listaTemp **begin,struct listaTemp **end, struct listaTemp *N
 
 }
 
-void imprimir(struct listaTemp *pessoas){
+void imprimir(struct listaTemp *begin){
     struct listaTemp *aux;
-    aux = pessoas;
+    aux = begin;
     if(aux != NULL){
         printf("Numero: %d\nQuantidade de EPs: %d \nTitulo: %s\nAno: %d\n\n\n", aux->info_temp.nro, aux->info_temp.qtd_ep, aux->info_temp.title, aux->info_temp.year);
 
@@ -109,7 +212,13 @@ void imprimir(struct listaTemp *pessoas){
 //recebe as informações de uma serie por parâmetro
 struct arv_series *aloca_arv_series(struct series info){
     struct arv_series *new;
+    struct listaTemp *lista_begin, *lista_end, *No;
+
+    int ano, qtd_episodio, numero;
+    char titulo[100];
+
     new = NULL;
+    lista_begin = lista_end = NULL;
 
     new = (struct arv_series*)malloc(sizeof(struct arv_series));
 
@@ -117,11 +226,29 @@ struct arv_series *aloca_arv_series(struct series info){
     new->left = NULL;
     new->right = NULL;
 
+    // insere informações de uma temporada na lista
+    for(int i=0; i < info.n_temporada;i++){
+        printf("Numero da temporada: ");
+        scanf("%d", &numero);
+        printf("Titulo: ");
+        scanf("%s", titulo);
+        printf("Quantidade de episodios: ");
+        scanf("%d", &qtd_episodio);
+        printf("Ano: ");
+        scanf("%d", &ano);
+        setbuf(stdin, NULL);
+
+        No = aloca_lista(numero, qtd_episodio, titulo, ano);
+
+        insere(&lista_begin,&lista_end, No);
+        imprimir(lista_begin);
+    }
+    new->info.begin = lista_begin;
     return new;
 }
 
 //insere uma serie na arvore
-//recebe a raiz da arvore por referencia como parametro e a seie a ser adicionada
+//recebe a raiz da arvore por referencia como parametro e a serie a ser adicionada e retorna 1 se foi adicionado e 0 caso contrario
 int inserir_arv_series(struct arv_series **root, struct arv_series *No){
     int res=0;
 
@@ -138,91 +265,94 @@ int inserir_arv_series(struct arv_series **root, struct arv_series *No){
     return res;
 }
 
-//////PARTICIPANTES
+////////////////////////////
 
-//aloca memoria e adiciona as informações do participante
-struct arv_part *aloca_arv_participantes(struct participantes info){
-    struct arv_part *new;
-    new = NULL;
-
-    new = (struct arv_part*)malloc(sizeof(struct arv_part));
-
-    new->infopart = info;
-    new->left = NULL;
-    new->right = NULL;
-
-    return new;
+//recebe a raiz da arvore de series como parametro e imprime in-ordem -> esq -> raiz -> dir
+void imprimir_inorder(struct arv_series *root){
+    if(root != NULL){
+        imprimir_inorder(root->left);
+        printf("\nCodigo: %d\n\nTitulo: %s\nNumero de Temporadas: %d\n\n",root->info.cod, root->info.title, root->info.n_temporada);
+        imprimir_inorder(root->right);
+    }
 }
 
-//insere um particpante na arvore
-//recebe a raiz da arvore por referencia como parametro e o participante a ser adicionado
-int inserir_arv_part(struct arv_part **root, struct arv_part *No){
-    int res=0;
 
-    if(*root == NULL){
-        *root = No;
-        res = 1;
-    }else{
-        if(strcmp(tolower(No->infopart.nm_personagem), tolower((**root).infopart.nm_personagem)) < 0){
-            res = inserir_arv_part(&(**root).left, No);
-        }else if (strcmp(tolower(No->infopart.nm_personagem), tolower((**root).infopart.nm_personagem)) > 0){
-            res = inserir_arv_part(&(**root).right, No);
+void imprimir_temporadas(struct arv_series *root, int codigo){
+    
+    if(root != NULL){
+
+        if(root->info.cod < codigo){
+            imprimir_temporadas(root->left, codigo);
+        }
+        else if(root->info.cod > codigo){
+            imprimir_temporadas(root->right, codigo);
+        }else{
+            imprimir(root->info.begin);
         }
     }
-    return res;
 }
-///////////////////////////////////////
 
 
 int menu(){
     int op;
-    printf("1 - Listar temporadas\n");
+    printf("1 - Listar series\n2 - Imprimir Em Ordem\n3 - Imprimir Info Temporadas\n");
     scanf("%d", &op);
     
     return op;
 }
 
 int main(){
-    struct listaTemp *lista_begin, *lista_end, *No;
+    
+    
+    
+    struct arv_series *root_series, *No_serie;
     struct series serie;
     
-    int continuar, ano, qtd_episodio, numero, escolha;
-    char titulo[100];
-
-    lista_begin = NULL;
-    lista_end = NULL;
+    int continuar, escolha,codigo, inseriu=0, cont=0;
+    
+    root_series = NULL;
 
     do
     {
         escolha = menu();
         switch (escolha)
         {
+        //cadastra uma serie
         case 1:
-            // insere pessoa(as) na lista
             do{
-                printf("Numero: ");
-                scanf("%d", &numero);
-                printf("Titulo: ");
-                scanf("%s", titulo);
-                printf("Quantidade de episodios: ");
-                scanf("%d", &qtd_episodio);
-                printf("Ano: ");
-                scanf("%d", &ano);
+                printf("Codigo da serie: ");
+                scanf("%d", &serie.cod);
+                printf("Titulo da Serie: ");
+                scanf("%s", serie.title);
+                printf("Numero de temporadas: ");
+                scanf("%d", &serie.n_temporada);
+        
                 setbuf(stdin, NULL);
 
-                No = aloca_lista(numero, qtd_episodio, titulo, ano);
-
-                insere(&lista_begin,&lista_end, No);
-
-                printf("Deseja adicionar mais? (1 - SIM || 0 - NAO)");
+                
+                //aloca memoria e insere na arvore de series a serie
+                No_serie = aloca_arv_series(serie);
+                inseriu = inserir_arv_series(&root_series, No_serie);
+                if(inseriu){
+                    printf("Serie adicionada!\n");
+                }else{
+                    printf("Serie NAO adicionada!\n");
+                }
+                printf("Adicionar outra serie? (1 - SIM || 0 - NAO):  ");
                 scanf("%d", &continuar);
                 setbuf(stdin, NULL);
             }while(continuar != 0);
+
             break;
-        //imprime a lista de temporadas
-        /*case 2:
-            imprimir(lista_begin);
-            break;*/
+        //imprime a lista de series em ordem de código
+        case 2:
+            imprimir_inorder(root_series);
+            break;
+        case 3:
+            printf("Codigo da Serie: ");
+            scanf("%d", &codigo);
+            imprimir_temporadas(root_series, codigo);
+            break;
         default:
             if(escolha != 0){
                 printf("Valor invalido!\n");
