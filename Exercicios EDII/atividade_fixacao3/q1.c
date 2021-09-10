@@ -241,9 +241,10 @@ struct arv_series *aloca_arv_series(struct series info){
         No = aloca_lista(numero, qtd_episodio, titulo, ano);
 
         insere(&lista_begin,&lista_end, No);
-        imprimir(lista_begin);
+        //imprimir(lista_begin);
     }
     new->info.begin = lista_begin;
+
     return new;
 }
 
@@ -281,21 +282,54 @@ void imprimir_temporadas(struct arv_series *root, int codigo){
     
     if(root != NULL){
 
-        if(root->info.cod < codigo){
+        if(codigo < root->info.cod){
             imprimir_temporadas(root->left, codigo);
         }
-        else if(root->info.cod > codigo){
+        if(codigo > root->info.cod){
             imprimir_temporadas(root->right, codigo);
+            
         }else{
             imprimir(root->info.begin);
         }
     }
 }
 
+void imprimir_arv_part(struct arv_part *root){
+    if(root != NULL){    
+        printf("Personagem: %s\n", root->infopart.nm_personagem);
+        imprimir_arv_part(root->left);
+        imprimir_arv_part(root->right);      
+    }
+}
+
+void imprimir_personagens(struct arv_series *root,int codigo, int temp){
+    struct listaTemp *aux;
+    if(root != NULL){
+
+        if(codigo < root->info.cod){
+            imprimir_personagens(root->left, codigo, temp);
+        }
+        if(codigo > root->info.cod){
+            imprimir_personagens(root->right, codigo,temp);
+            
+        }else{
+            aux = root->info.begin;
+            while(aux->info_temp.nro != temp && aux != NULL){
+                aux = aux->prox;
+            }
+            if(aux != NULL){
+                imprimir_arv_part(aux->info_temp.root_part);
+            }
+            else{
+                printf("Temporada NAO encontrada\n");
+            }
+        }
+    }
+}
 
 int menu(){
     int op;
-    printf("1 - Listar series\n2 - Imprimir Em Ordem\n3 - Imprimir Info Temporadas\n");
+    printf("1 - Listar Series\n2 - Imprimir Em Ordem\n3 - Imprimir Info Temporadas\n4 - Imprimir Persongens\n5 - Imprimir Artistas\n0 - Sair\n");
     scanf("%d", &op);
     
     return op;
@@ -304,11 +338,10 @@ int menu(){
 int main(){
     
     
-    
     struct arv_series *root_series, *No_serie;
     struct series serie;
     
-    int continuar, escolha,codigo, inseriu=0, cont=0;
+    int continuar, escolha,codigo, temporada, inseriu=0, cont=0;
     
     root_series = NULL;
 
@@ -352,6 +385,15 @@ int main(){
             printf("Codigo da Serie: ");
             scanf("%d", &codigo);
             imprimir_temporadas(root_series, codigo);
+            break;
+        case 4:
+            printf("Codigo da Serie: ");
+            scanf("%d", &codigo);
+            printf("Temporada: ");
+            scanf("%d", &temporada);
+            imprimir_personagens(root_series, codigo, temporada);
+            break;
+        case 5:
             break;
         default:
             if(escolha != 0){
