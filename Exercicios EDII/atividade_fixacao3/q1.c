@@ -59,17 +59,17 @@ int compare_strings(char s1[100], char s2[100]){
             //maisculas e minusculas a função tolower transformara todas em minusculas
             res = 0;
         }
-        else if(tolower(s1[i]) > tolower(s2[j])){
+        else if(tolower(s1[i]) c> tolower(s2[j])){
             res = 1;
         }
         i++;
         j++;
     }
 	//caso sejam igual entra em uma dessas condições
-    if(strlen(s1) < strlen(s2)){
+    if(strlen(s1) < strlen(s2) && (res != -1)){
         res = 0;
     }
-    if(strlen(s1) > strlen(s2)){
+    if(strlen(s1) > strlen(s2) && (res != -1)){
         res = 1;
     }
 	return res;
