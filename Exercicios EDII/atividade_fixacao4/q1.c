@@ -88,43 +88,45 @@ void profundidade(struct arv *root, int elemento, int *profundo){
 //recebe uma arvore l o elemento a ser buscado l então retorna se endereço
 struct arv *busca_element(struct arv *root, int elemento){
     struct arv *res;
-    if(root != NULL){
-        if(elemento < root->info){
-            res = busca_element(root->left, elemento);
+    res = root;
+    if(res != NULL){
+        if(elemento < res->info){
+            res = busca_element(res->left, elemento);
         }
-        else if(elemento > root->info){
-            res = busca_element(root->right, elemento);
+        else if(elemento > res->info){
+            res = busca_element(res->right, elemento);
         }
     }
-    if (root->info == elemento){
-        res = root;
 
-    }else{
-        res = NULL;
-    }
-    
-    
     return res;
 }
 
 ///recebe um Nó de uma arvores seja ele a raiz da arvore ou não
 int altura_No(struct arv *root){
-    int res = -1, r, l;
+    int res, r=0, l=0;
     if (root == NULL){
-        res += 0;
+        res = -1;
     }else{
-        l = altura_No(root->left) + 1;
-        r = altura_No(root->right) + 1;
+        l = altura_No(root->left);
+        //printf("No = %d\n", root->info);
+        //printf("l = %d\n", l);
+        r = altura_No(root->right);
+        //printf("r = %d\n", r);
+        //printf("No = %d\n", root->info);
         if(l > r){
-            res = l;
+            res = l+1;
         }else{
-            res = r;
+            res = r+1;
         }
     }
     return res;
    
 }
 
+
+int descendentes(struct arv *root){
+    
+}
 
 int menu(){
     int res;
@@ -141,7 +143,7 @@ int main(){
     struct arv *root, *No;
     int escolha,qtd_no, qtd_ramo, elemento, profundo, alt, elem;
 
-    root = NULL;
+    root =  NULL;
 
     srand(time(NULL));
 
@@ -152,10 +154,24 @@ int main(){
         case 1:
         // / 3 5 2 1 4 6 7
            //No = aloca_arv(1 + rand()%99);
-            printf("\nInfo: ");
-            scanf("%d", &elem);
-            No = altura_No();
+            //printf("\nInfo: ");
+            //scanf("%d", &elem);
+
+            No = aloca_arv(3);
             inserir_arv(&root, No);
+            No = aloca_arv(5);
+            inserir_arv(&root, No);
+            No = aloca_arv(2);
+            inserir_arv(&root, No);
+            No = aloca_arv(1);
+            inserir_arv(&root, No);
+            No = aloca_arv(4);
+            inserir_arv(&root, No);
+            No = aloca_arv(6);
+            inserir_arv(&root, No);
+            No = aloca_arv(7);
+            inserir_arv(&root, No);
+
             break;
         case 2:
             qtd_no = qtd_ramo = 0;
@@ -174,16 +190,11 @@ int main(){
             printf("Elemento: ");
             scanf("%d", &elemento);
             No = busca_element(root, elemento);
-            //printf("%d", No1->left->info);
-            alt = 0;  
-            if (No != NULL){
-                alt = altura_No(No);
-                printf("Altura: %d\n", alt);
-                free(No);
-
-            }else{
-                printf("Valor nao existe!\n");
-            }
+            //printf("No = %d\n", No->left->info);
+            alt = 0;
+            alt = altura_No(No);
+            printf("Altura: %d\n", alt);
+            
             
             break;
         default:
