@@ -125,7 +125,16 @@ int altura_No(struct arv *root){
 
 
 int descendentes(struct arv *root){
-    
+    int sum = 0;
+    if(root != NULL){
+       // printf("sum = %d\n", sum);
+        sum += descendentes(root->left) + 1;
+        sum += descendentes(root->right) + 1;
+        printf("sum = %d\n", sum);
+    }else{
+        sum = -1;
+    }
+    return sum;
 }
 
 int menu(){
@@ -141,7 +150,7 @@ int menu(){
 int main(){
     
     struct arv *root, *No;
-    int escolha,qtd_no, qtd_ramo, elemento, profundo, alt, elem;
+    int escolha,qtd_no, qtd_ramo, elemento, profundo, alt, elem, desc;
 
     root =  NULL;
 
@@ -195,7 +204,13 @@ int main(){
             alt = altura_No(No);
             printf("Altura: %d\n", alt);
             
-            
+            break;
+        case 5:
+            printf("Elemento: ");
+            scanf("%d", &elemento);
+            No = busca_element(root, elemento);
+            desc = descendentes(No);
+            printf("Numero de descendentes: %d\n", desc);
             break;
         default:
             break;
