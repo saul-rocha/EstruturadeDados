@@ -123,14 +123,14 @@ int altura_No(struct arv *root){
    
 }
 
-
+//recebe um nó de uma arvore e retorna a quantidade de nós descendentes
 int descendentes(struct arv *root){
     int sum = 0;
     if(root != NULL){
        // printf("sum = %d\n", sum);
         sum += descendentes(root->left) + 1;
         sum += descendentes(root->right) + 1;
-        printf("sum = %d\n", sum);
+       // printf("sum = %d\n", sum);
     }else{
         sum = -1;
     }
