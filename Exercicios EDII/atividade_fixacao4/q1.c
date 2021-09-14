@@ -16,6 +16,8 @@ struct arv *aloca_arv(int i){
 
     new = (struct arv*)malloc(sizeof(struct arv));
     new->info = i;
+    new->left = NULL;
+    new->right = NULL;
 
     return new;
 }
