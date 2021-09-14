@@ -41,11 +41,11 @@ int inserir_arv(struct arv **root, struct arv *No){
 }
 
 //recebe a raiz da arvore como parametro l imprime em pre-ordem  raiz-> esq -> dir
-void imprimir_preorder(struct arv*root){
+void imprimir_inorder(struct arv*root){
     if(root != NULL){
+        imprimir_inorder(root->left);
         printf("\nInfo:%d\n",root->info);
-        imprimir_preorder(root->left);
-        imprimir_preorder(root->right);
+        imprimir_inorder(root->right);
     }
 }
 ///////////////////
