@@ -142,7 +142,7 @@ int descendentes(struct arv *root){
 int menu(){
     int res;
 
-    printf("1 - Preencher arvore\n2 - Numero de Nos e Ramos\n3 - Profundidade do Elemento\n4 - Alturado Elemento\n5 - Descendentes\n0 - Sair\n");
+    printf("1 - Preencher arvore\n2 - Imprecao dos elementos na ABB\n3 - Numero de Nos e Ramos\n4 - Profundidade do Elemento\n5 - Alturado Elemento\n6 - Descendentes\n0 - Sair\n");
     scanf("%d", &res);
 
     return res;
@@ -169,6 +169,14 @@ int main(){
             //scanf("%d", &elem);
 
             No = aloca_arv(3);
+
+            //if(No->left == NULL){
+            //    printf("Esquerda é NULL\n");
+            //}
+            //if(No->right == NULL){
+            //    printf("Direita é NULL\n");
+            //}
+
             inserir_arv(&root, No);
             No = aloca_arv(5);
             inserir_arv(&root, No);
@@ -184,20 +192,26 @@ int main(){
             inserir_arv(&root, No);
 
             break;
+
         case 2:
+            printf("Imprecao in-ordem dos numeros na ABB:\n");
+            imprimir_inorder(root);
+            break;
+
+        case 3:
             qtd_no = qtd_ramo = 0;
             Nos_Ramos(root, &qtd_no, &qtd_ramo);
             //imprimir_preorder(root);
             printf("Quantidade de Nos: %d\nQuantidade de Ramos: %d\n", qtd_no, qtd_ramo);
             break;
-        case 3:
+        case 4:
             profundo = 0;
             printf("Elemento: ");
             scanf("%d", &elemento);
             profundidade(root, elemento, &profundo);
             printf("Profundidade de %d eh %d \n\n", elemento, profundo);
             break;
-        case 4:
+        case 5:
             printf("Elemento: ");
             scanf("%d", &elemento);
             No = busca_element(root, elemento);
@@ -207,7 +221,7 @@ int main(){
             printf("Altura: %d\n", alt);
             
             break;
-        case 5:
+        case 6:
             printf("Elemento: ");
             scanf("%d", &elemento);
             No = busca_element(root, elemento);
