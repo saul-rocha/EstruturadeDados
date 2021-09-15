@@ -2,18 +2,25 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 
 
 
-struct lista{
+struct lista_equivalentes{
 	char info[100];
-	struct lista *prox;
+	struct lista_equivalentes *prox;
 };
 
-struct arv{
+struct arv_palavras{
 	char info[100];
+	struct lista_equivalentes *l;
 	struct arv *left, *right;
-	struct lista *l;
+};
+
+struct arv_unidade{
+    char unidade[100];
+    struct arv_palavras *nm_unidade;
+    struct unidade *left, *right;
 };
 
 //compara duas strings
@@ -43,12 +50,12 @@ int compare_strings(char s1[100], char s2[100]){
 
 
 ////LISTA
-struct lista *aloca_lista(char palavra[100]){
-    struct lista *new;
+struct lista_equivalentes *aloca_lista(char palavra[100]){
+    struct lista_equivalentes *new;
 
     new = NULL;
     
-    new = (struct lista*)malloc(sizeof(struct lista));
+    new = (struct lista_equivalentes*)malloc(sizeof(struct lista_equivalentes));
 
     strcpy(new->info, palavra);
     
@@ -58,9 +65,9 @@ struct lista *aloca_lista(char palavra[100]){
 
 //insere em ordem alfabetica
 //recebe o iniccio e o fim de uma lista por referencia eo No a ser adicionado
-void insere(struct lista **begin,struct lista **end, struct lista *No){
+void insere(struct lista_equivalentes **begin,struct lista_equivalentes **end, struct lista_equivalentes *No){
     int s;
-    struct lista *aux, *ant;
+    struct lista_equivalentes *aux, *ant;
     aux = *begin;
     //insere no inicio
     if(*begin == NULL){
@@ -90,9 +97,9 @@ void insere(struct lista **begin,struct lista **end, struct lista *No){
 
 
 ///ALOCAÇÃO E INSERSÃO NA ARVORE
-struct arv *aloca_arv(){
-    struct arv *new;
-    struct lista *lista_begin, *lista_end, *No;
+struct arv_palavras *aloca_arv(){
+    struct arv_palavras *new;
+    struct lista_equivalentes *lista_begin, *lista_end, *No;
 
     int continuar;
     char palavra[100];
@@ -100,7 +107,7 @@ struct arv *aloca_arv(){
     new = NULL;
     lista_begin = lista_end = NULL;
 
-    new = (struct arv*)malloc(sizeof(struct arv));
+    new = (struct arv_palavras*)malloc(sizeof(struct arv_palavras));
 
     new->left = NULL;
     new->right = NULL;
@@ -108,7 +115,7 @@ struct arv *aloca_arv(){
     // insere informações na lista
     do{
         printf("Palavra: ");
-        scanf("%s", palavra);
+        scanf("%s", palavra);// aqui vai ser a string que vem do arquivo
         setbuf(stdin, NULL);
 
         No = aloca_lista(palavra);
@@ -123,42 +130,73 @@ struct arv *aloca_arv(){
     return new;
 }
 
-//insere uma serie na arvore
+/*/insere uma serie na arvore
 //recebe a raiz da arvore por referencia como parametro e a serie a ser adicionada e retorna 1 se foi adicionado e 0 caso contrario
-int inserir_arv(struct arv_series **root, struct arv_series *No){
+int inserir_arv_palavras(struct arv_palavras **root, struct arv_palavras *No){
     int res=0;
-
     if(*root == NULL){
         *root = No;
         res = 1;
     }else{
-        if(No->info.cod < (**root).info.cod){
-            res = inserir_arv_series(&(**root).left, No);
-        }else if (No->info.cod > (**root).info.cod){
-            res = inserir_arv_series(&(**root).right, No);
+        if(compare_strings(No->info, (*root)->info) == 0){
+            res = inserir_arv_palavras(&(**root).left, No);
+        }else if (compare_strings(No->info, (*root)->info) == 1){
+            res = inserir_arv_palavras(&(**root).right, No);
         }
     }
     return res;
 }
 
 
-//recebe a raiz da arvore de series como parametro e imprime in-ordem -> esq -> raiz -> dir
-void imprimir_arv(struct arv *root){
+//recebe a raiz da arvore como parametro e imprime in-ordem -> esq -> raiz -> dir
+void imprimir_arv(struct arv_palavras *root){
     if(root != NULL){
-        printf("\nCodigo: %d\n\nTitulo: %s\nNumero de Temporadas: %d\n\n",root->info.cod, root->info.title, root->info.n_temporada);
-        imprimir_inorder(root->left);
-        imprimir_inorder(root->right);
+        printf("Titulo: %s\n\n", root->info);
+        imprimir_arv(root->left);
+        imprimir_arv(root->right);
     }
 }
+*/
 ////////////////////////////
 
+
+
+int menu(){
+    int escolha;
+    printf("1 - Preencher Arvores\n0 - Sair\n");
+    scanf("%d", &escolha);
+
+    return escolha;
+}
+
 int main(){
-    struct arv *vocab;
+    struct arv *port_ingles;
+
+    int escolha;
+    char c[100];
+
+    port_ingles = NULL;
+
 
     FILE *filename;
 
-    filename = fopen("livro_texto.txt", "w");
-    if(filename == NULL)
-    {
-        printf("Erro na abertura do arquivo!");
-    }
+    filename = fopen("livro_texto.txt", "r");
+
+    do{
+        escolha = menu();
+        switch (escolha)
+        {
+        case 1:
+            fgets(c,100,filename);
+            printf("%s\n", c);
+            break;
+        
+        default:
+            break;
+        }
+
+    }while(escolha != 0);
+    fclose(filename);
+
+    return 0;
+}

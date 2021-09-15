@@ -1,0 +1,4 @@
+%unidade1 house:casa
+%unidade2 dog:cachorro,cachorra
+%unidade3 cima:up
+
