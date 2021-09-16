@@ -117,7 +117,7 @@ struct arv_palavras *aloca_arv_palavras(char palavra[100], char port_word[100]){
     struct arv_palavras *new;
     struct lista_equivalentes *lista_begin, *lista_end, *No;
 
-    int continuar, i,j;
+    int  i,j;
     char  english_word[100];
 
 
@@ -233,8 +233,8 @@ struct arv_unidade *aloca_arv_unidade(char palavra[100]){
             k++;
         }
         port_word[k] = '\0';
-        No = aloca_arv_palavras(palavra, port_word);
-        inserir_arv_palavras(&root, No);
+        //No = aloca_arv_palavras(palavra, port_word);
+        //inserir_arv_palavras(&root, No);
     }
 
     return new;
@@ -300,6 +300,7 @@ int main(){
             }
             
             imprimir_arv_unidades(port_ingles);
+            
             
             break;
         case 2:
