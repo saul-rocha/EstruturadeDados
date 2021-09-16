@@ -122,14 +122,14 @@ struct arv_palavras *aloca_arv_palavras(char palavra[100], char port_word[100]){
 
 
     new = NULL;
+    new->left = NULL;
+    new->right = NULL;
+
     lista_begin = lista_end = NULL;
 
     new = (struct arv_palavras*)malloc(sizeof(struct arv_palavras));
     strcpy(new->info, port_word);
-
-    new->left = NULL;
-    new->right = NULL;
-
+    //printf("%s na aloca palavras\n", port_word);
     
     for(i=0; palavra[i] != ' '; i++);//anda a string até o primeiro espaço vazio
     j=0;
@@ -169,7 +169,8 @@ int inserir_arv_palavras(struct arv_palavras **root, struct arv_palavras *No){
 //recebe a raiz da arvore como parametro e imprime in-ordem -> esq -> raiz -> dir
 void imprimir_arv_palavras(struct arv_palavras *root){
     if(root != NULL){
-        printf("Palavra: %s\n\n", root->info);
+        printf("Palavra: %s\n", root->info);
+        imprimir_lista(root->l);
         imprimir_arv_palavras(root->left);
         imprimir_arv_palavras(root->right);
     }
@@ -183,7 +184,7 @@ struct arv_unidade *aloca_arv_unidade(char palavra[100]){
     
     int  i,j,k, qtd_vir=0;
     char unidade[100], port_word[100];
-    memset(unidade,'\0',strlen(unidade));
+    //memset(unidade,'\0',strlen(unidade));
     new = NULL;
     root = NULL;
 
@@ -213,12 +214,27 @@ struct arv_unidade *aloca_arv_unidade(char palavra[100]){
             
             port_word[k] = palavra[j];
             k++;
-            if(palavra[j+1] != ',' && palavra[j+1] != '\0'){
+            if(palavra[j+1] != ',' && palavra[j+1] != '\0' &&  palavra[j+1] != '\n'){
+                port_word[j] = '\0';
                 //quando finalizar a passagem da palavra adiciona na arvore
                 No = aloca_arv_palavras(palavra, port_word);
                 inserir_arv_palavras(&root, No);
             }
+            if(palavra[j+1] != ','){
+                j = j+2;
+            }
         }
+    }else{
+        for(i=0; palavra[i] != ':';i++);
+        i=i+1;
+        k=0;
+        for(; palavra[i] != '\0' && palavra[i] != '\n';i++){
+            port_word[k] = palavra[i];
+            k++;
+        }
+        port_word[k] = '\0';
+        No = aloca_arv_palavras(palavra, port_word);
+        inserir_arv_palavras(&root, No);
     }
 
     return new;
@@ -242,7 +258,7 @@ int inserir_arv_unidade(struct arv_unidade **root, struct arv_unidade *No){
 void imprimir_arv_unidades(struct arv_unidade *root){
     if(root != NULL){
         printf("Unidade: %s\n\n", root->nm_unidade);
-        //printf("Palavra: %s", root->palavras->info);
+        imprimir_arv_palavras(root->palavras);
         imprimir_arv_unidades(root->left);
         imprimir_arv_unidades(root->right);
     }
@@ -275,7 +291,6 @@ int main(){
             while(!feof(filename)){
                 fgets(c,100,filename);
                 
-                
                 No = aloca_arv_unidade(c);
                 res = inserir_arv_unidade(&port_ingles, No);
                 if(!res){
@@ -285,7 +300,7 @@ int main(){
             }
             
             imprimir_arv_unidades(port_ingles);
-            printf("%s\n",port_ingles->palavras->info);
+            
             break;
         case 2:
             
