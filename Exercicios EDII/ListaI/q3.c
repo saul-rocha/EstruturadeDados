@@ -102,7 +102,16 @@ void insere(struct lista_equivalentes **begin,struct lista_equivalentes **end, s
 
 }
 
-
+//impime a lista
+void imprimir_lista(struct lista_equivalentes *begin){
+    struct lista_equivalentes *aux;
+    aux = begin;
+    if(aux != NULL){
+        printf("%s, ", aux->info);
+        imprimir_lista(aux->prox);
+    } 
+    printf("\n");
+}
 ///ALOCAÇÃO E INSERSÃO NA ARVORE
 struct arv_palavras *aloca_arv_palavras(char palavra[100], char port_word[100]){
     struct arv_palavras *new;
@@ -129,6 +138,7 @@ struct arv_palavras *aloca_arv_palavras(char palavra[100], char port_word[100]){
         j++;
     }
     english_word[j+1] = '\0';
+
 
     No = aloca_lista(english_word);
     insere(&lista_begin,&lista_end, No);
@@ -173,7 +183,7 @@ struct arv_unidade *aloca_arv_unidade(char palavra[100]){
     
     int  i,j,k, qtd_vir=0;
     char unidade[100], port_word[100];
-    
+    memset(unidade,'\0',strlen(unidade));
     new = NULL;
     root = NULL;
 
@@ -183,10 +193,13 @@ struct arv_unidade *aloca_arv_unidade(char palavra[100]){
 
     j=0;
     for(i=0; palavra[i] != ' '; i++){
-        if(palavra[i] != '%')
+        if(palavra[i] != '%'){
             unidade[j] = palavra[i];
+            j++;
+
+        }
     }
-    unidade[i+1] = '\0';
+    unidade[j] = '\0';
     strcpy(new->nm_unidade, unidade);
 
     qtd_virgulas(palavra, &qtd_vir);
@@ -196,13 +209,12 @@ struct arv_unidade *aloca_arv_unidade(char palavra[100]){
         for(i; palavra[i] != ':';i++);
         j = i+1;
         k=0;
-        for(j; palavra[j] != ',' && palavra[j] != '\0';j++){//pega a palavra entre as virgulas ou a ultima/unica
+        for(j; palavra[j] != ',' && palavra[j] != '\0' && palavra[j] != '\n';j++){//pega a palavra entre as virgulas ou a ultima/unica
             
             port_word[k] = palavra[j];
             k++;
             if(palavra[j+1] != ',' && palavra[j+1] != '\0'){
                 //quando finalizar a passagem da palavra adiciona na arvore
-
                 No = aloca_arv_palavras(palavra, port_word);
                 inserir_arv_palavras(&root, No);
             }
@@ -230,6 +242,7 @@ int inserir_arv_unidade(struct arv_unidade **root, struct arv_unidade *No){
 void imprimir_arv_unidades(struct arv_unidade *root){
     if(root != NULL){
         printf("Unidade: %s\n\n", root->nm_unidade);
+        //printf("Palavra: %s", root->palavras->info);
         imprimir_arv_unidades(root->left);
         imprimir_arv_unidades(root->right);
     }
@@ -245,15 +258,15 @@ int menu(){
 int main(){
     struct arv_unidade *port_ingles, *No;
 
-    int escolha, res, n=0;
-    char c[100];    
-    FILE *filename, *temporaryfile;
+    int escolha, res, tam, n=0;
+    char c[100], c1[100];    
+    FILE *filename;
 
     port_ingles = NULL;
 
 
     filename = fopen("livro_texto.txt", "r");
-    temporaryfile = tmpfile ();// cria um arquivo temporario
+   
     do{
         escolha = menu();
         switch (escolha)
@@ -261,15 +274,18 @@ int main(){
         case 1:
             while(!feof(filename)){
                 fgets(c,100,filename);
+                
+                
                 No = aloca_arv_unidade(c);
                 res = inserir_arv_unidade(&port_ingles, No);
                 if(!res){
-                    printf("Unidade Nao inserida!\n");
+                    printf("[%s] Nao inserida! Ja inserida anteriormente!\n", c);
                 }
-                //printf("%s\n", port_ingles->nm_unidade);
+                
             }
             
             imprimir_arv_unidades(port_ingles);
+            printf("%s\n",port_ingles->palavras->info);
             break;
         case 2:
             

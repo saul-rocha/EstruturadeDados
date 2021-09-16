@@ -1,3 +1,4 @@
-%unidade1 house:casa
-%unidade2 dog:cachorro
+%unidade2 house:casa
+%unidade1 dog:cachorro,cachorra
+%unidade3 cima:up
 %unidade3 cima:up
