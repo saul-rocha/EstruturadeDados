@@ -76,6 +76,7 @@ struct lista_equivalentes *aloca_lista(char palavra[100]){
 void insere(struct lista_equivalentes **begin,struct lista_equivalentes **end, struct lista_equivalentes *No){
     struct lista_equivalentes *aux, *ant;
     aux = *begin;
+    
     //insere no inicio
     if(*begin == NULL){
         *begin = No;
@@ -113,37 +114,28 @@ void imprimir_lista(struct lista_equivalentes *begin){
     printf("\n");
 }
 ///ALOCAÇÃO E INSERSÃO NA ARVORE
-struct arv_palavras *aloca_arv_palavras(char palavra[100], char port_word[100]){
+struct arv_palavras *aloca_arv_palavras(char port_word[100], char english_word[100]){
     struct arv_palavras *new;
     struct lista_equivalentes *lista_begin, *lista_end, *No;
-
+        
     int  i,j;
-    char  english_word[100];
 
 
     new = NULL;
-    new->left = NULL;
-    new->right = NULL;
 
-    lista_begin = lista_end = NULL;
+    
+   
+    lista_begin = NULL;
+    lista_end = NULL;
 
     new = (struct arv_palavras*)malloc(sizeof(struct arv_palavras));
     strcpy(new->info, port_word);
-    //printf("%s na aloca palavras\n", port_word);
     
-    for(i=0; palavra[i] != ' '; i++);//anda a string até o primeiro espaço vazio
-    j=0;
-    for(i; palavra[i] != ':'; i++){//contatena a string até o dois pontos e insere na lista
-        english_word[j] =  palavra[i];
-        j++;
-    }
-    english_word[j+1] = '\0';
-
-
     No = aloca_lista(english_word);
     insere(&lista_begin,&lista_end, No);
     
     new->l = lista_begin;
+    printf("%s Na aloca palavra\n", new->info);
 
     return new;
 }
@@ -182,8 +174,8 @@ struct arv_unidade *aloca_arv_unidade(char palavra[100]){
     struct arv_unidade *new;
     struct arv_palavras *root, *No;
     
-    int  i,j,k, qtd_vir=0;
-    char unidade[100], port_word[100];
+    int  i,j,k, qtd_vir, res;
+    char unidade[100], english_word[100],portugues_word[100];
     //memset(unidade,'\0',strlen(unidade));
     new = NULL;
     root = NULL;
@@ -203,40 +195,35 @@ struct arv_unidade *aloca_arv_unidade(char palavra[100]){
     unidade[j] = '\0';
     strcpy(new->nm_unidade, unidade);
 
-    qtd_virgulas(palavra, &qtd_vir);
-
-    i=0;
-    if( qtd_vir > 0){
-        for(i; palavra[i] != ':';i++);
-        j = i+1;
-        k=0;
-        for(j; palavra[j] != ',' && palavra[j] != '\0' && palavra[j] != '\n';j++){//pega a palavra entre as virgulas ou a ultima/unica
+    ///inserir todas as palavras em uma unidade
+    while(palavra[i] != '\n' && palavra[i] != '\0'){
+        j=0;
+        for(;palavra[i] != ':'; i++){//pega a palavra em ingles
+            english_word[j] = palavra[i];
+            j++;
+        }
+        
+        english_word[j] = '\0';
+        j=0;
+        for(i=i+1;palavra[i] != '\n' && palavra[i] != '\0'; i++){//pega adiciona todas na arvore de palavras
+            portugues_word[j] = palavra[i];
+            j++;
             
-            port_word[k] = palavra[j];
-            k++;
-            if(palavra[j+1] != ',' && palavra[j+1] != '\0' &&  palavra[j+1] != '\n'){
-                port_word[j] = '\0';
-                //quando finalizar a passagem da palavra adiciona na arvore
-                No = aloca_arv_palavras(palavra, port_word);
-                inserir_arv_palavras(&root, No);
-            }
-            if(palavra[j+1] != ','){
-                j = j+2;
+            if(palavra[i] == '.' || palavra[i] == ','){
+                portugues_word[j-1] = '\0';
+                
+                No = aloca_arv_palavras(portugues_word, english_word);
+                res = inserir_arv_palavras(&root, No);
+                j=0;
+                if(res){
+                    printf("[%s] Inserida!\n", portugues_word);
+                }
+
             }
         }
-    }else{
-        for(i=0; palavra[i] != ':';i++);
-        i=i+1;
-        k=0;
-        for(; palavra[i] != '\0' && palavra[i] != '\n';i++){
-            port_word[k] = palavra[i];
-            k++;
-        }
-        port_word[k] = '\0';
-        //No = aloca_arv_palavras(palavra, port_word);
-        //inserir_arv_palavras(&root, No);
     }
 
+    new->palavras = root;
     return new;
 }
 
@@ -300,7 +287,8 @@ int main(){
             }
             
             imprimir_arv_unidades(port_ingles);
-            
+            printf("Aqui!\n");
+            imprimir_arv_palavras(port_ingles->palavras);
             
             break;
         case 2:
