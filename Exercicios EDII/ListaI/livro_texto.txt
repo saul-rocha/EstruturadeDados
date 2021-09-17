@@ -1,4 +1,6 @@
-%unidade2 house:casa.
-%unidade1 dog:cachorro,cachorra,cachorro.
-%unidade3 up:cima.
-%unidade1 door:porta.
+%2
+house:casa
+dog:cachorro,cachorra,cachorro
+%1
+up:cima
+door:porta
