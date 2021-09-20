@@ -1,6 +1,9 @@
 %2
 house:casa
-dog:cachorro,cachorra,cachorro
+dog:cachorro,,cachorro
 %1
 up:cima
 door:porta
+%3
+up:cima
+down:baixo

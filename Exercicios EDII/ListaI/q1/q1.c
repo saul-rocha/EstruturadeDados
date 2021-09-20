@@ -30,6 +30,8 @@ obs. 1: Todas as vezes que for criar uma nova árvore, você
 deve liberar a anterior, para que você tenha memória 
 disponível.
 
+
+gcc -o a q1.c arvore_binaria.c lista_ocorrencia.c
 */
 
 #include<stdio.h>
@@ -72,7 +74,10 @@ int main(){
             }
             
         }
-
+        // A função clock devolve o tempo de CPU decorrido desde o
+        // início da execução do seu programa. O tempo é medido em
+        // ciclos do relógio interno. Cada  CLOCKS_PER_SEC ciclos
+        // correspondem aproximadamente a 1 segundo.
         t_insercao = clock() - t_insercao; //tempo final - tempo inicial
 
         t_insercao_medio = t_insercao_medio + ((double)t_insercao)/((CLOCKS_PER_SEC/1000));

@@ -126,6 +126,7 @@ int inserir_arv_palavras(struct arv_palavras **root, struct arv_palavras *No){
 void imprimir_arv_palavras(struct arv_palavras *root){
     if(root != NULL){
         printf("Palavra: %s\n", root->info);
+        printf("Equivalentes: ");
         imprimir_lista(root->l);
         imprimir_arv_palavras(root->left);
         imprimir_arv_palavras(root->right);
@@ -150,17 +151,17 @@ void unidade(struct unit unidade,char palavra[100]){
     
     english_word[j] = '\0';
     j=0;
-    for(i=i+1;palavra[i] != '\n' && palavra[i] != '\0'; i++){//pega adiciona todas na arvore de palavras
+    for(i=i+1;palavra[i] != '\n' && palavra[i] != '\0'; ++i){//pega adiciona todas na arvore de palavras
         portugues_word[j] = palavra[i];
         j++;
         
         if(palavra[i] == '\n' || palavra[i] == '\0'|| palavra[i] == ','){
-            portugues_word[j] = '\0';
+            portugues_word[j-1] = '\0';
             
             No = aloca_arv_palavras(portugues_word, english_word);
             
-            printf("%s\n", No->info);
             res = inserir_arv_palavras(&unidade.words, No);
+            imprimir_arv_palavras(unidade.words);
             j=0;
             if(!res){
                 printf("[%s] Nao Inserida!\n", portugues_word);
@@ -180,7 +181,7 @@ int menu(){
 int main(){
     struct unit port_ingles[TAM];
 
-    int escolha, res, i=-1,j;
+    int escolha, res, i=-1;
     char c[100], c1;
     FILE *filename;
 
@@ -199,17 +200,20 @@ int main(){
                 if(c[0] == '%'){
                     i++;
                     port_ingles[i].unidade = c[1];
-                }   
-                unidade(port_ingles[i],c);
+                }else{
+                    unidade(port_ingles[i],c);
+                } 
             }
-            printf("%c\n", port_ingles[i].unidade);
-            
-            
-            
+  
+            //printf("%c\n", port_ingles[2].unidade);
             
             break;
         case 2:
-            imprimir_arv_palavras(port_ingles[0].words);
+            for(int j=0;j < i;j++){
+
+                //imprimir_arv_palavras(port_ingles[j].words);
+                printf("%s\n", port_ingles[0].words->info);
+            }
             break;
             
         default:
