@@ -53,9 +53,9 @@ struct lista_equivalentes *aloca_lista(char palavra[100]){
     new = NULL;
     
     new = (struct lista_equivalentes*)malloc(sizeof(struct lista_equivalentes));
+    new->prox = NULL;
 
     strcpy(new->info, palavra);
-    
 
     return new;
 }
@@ -66,7 +66,9 @@ void insere_lista(struct lista_equivalentes **begin, struct lista_equivalentes *
 
     if(*begin == NULL){
         *begin = No;
+        
     }else{
+        printf("aqui No.info = %s\n", No->info);
         insere_lista(&(**begin).prox, No);
     }
 
@@ -85,18 +87,19 @@ void imprimir_lista(struct lista_equivalentes *begin){
 ///ALOCAÇÃO E INSERSÃO NA ARVORE
 struct arv_palavras *aloca_arv_palavras(char port_word[100], char english_word[100]){
     struct arv_palavras *new;
-    struct lista_equivalentes *lista_begin, *lista_end, *No;
+    struct lista_equivalentes *lista_begin, *No;
 
     new = NULL;
 
-
     lista_begin = NULL;
-    lista_end = NULL;
 
     new = (struct arv_palavras*)malloc(sizeof(struct arv_palavras));
     strcpy(new->info, port_word);
+
     No = aloca_lista(english_word);
     insere_lista(&lista_begin, No);
+
+    lista_begin->prox = NULL;
     
     new->l = lista_begin;
     new->left=NULL;
@@ -137,8 +140,9 @@ void imprimir_arv_palavras(struct arv_palavras *root){
 
 
 /// UNIDADES
-void unidade(struct unit unidade,char palavra[100]){
+struct unit unidade(struct unit unidade,char palavra[100]){
     struct arv_palavras *No;
+    struct unit resultado;
     int  i,j, res;
     char english_word[100],portugues_word[100];
     ///inserir todas as palavras em uma unidade
@@ -151,23 +155,26 @@ void unidade(struct unit unidade,char palavra[100]){
     
     english_word[j] = '\0';
     j=0;
-    for(i=i+1;palavra[i] != '\n' && palavra[i] != '\0'; ++i){//pega adiciona todas na arvore de palavras
+    for(i=i+1;palavra[i] != '\0'; ++i){//pega adiciona todas na arvore de palavras
         portugues_word[j] = palavra[i];
         j++;
-        
-        if(palavra[i] == '\n' || palavra[i] == '\0'|| palavra[i] == ','){
+    
+        if(palavra[i] == '.' || palavra[i] == '\0'|| palavra[i] == ','){
+
             portugues_word[j-1] = '\0';
-            
+            printf("Port: %s - En: %s\n", portugues_word, english_word);
+
             No = aloca_arv_palavras(portugues_word, english_word);
-            
             res = inserir_arv_palavras(&unidade.words, No);
-            imprimir_arv_palavras(unidade.words);
+            //printf("unit: %s\n", unidade.words->l->info);
             j=0;
             if(!res){
                 printf("[%s] Nao Inserida!\n", portugues_word);
             }
         }
     }
+    return unidade;
+    
 }
 
 int menu(){
@@ -200,8 +207,9 @@ int main(){
                 if(c[0] == '%'){
                     i++;
                     port_ingles[i].unidade = c[1];
-                }else{
-                    unidade(port_ingles[i],c);
+                    //printf("%s\n", c);
+                }else if (strlen(c) > 0){
+                    port_ingles[i] = unidade(port_ingles[i],c);
                 } 
             }
   
@@ -210,9 +218,9 @@ int main(){
             break;
         case 2:
             for(int j=0;j < i;j++){
-
-                //imprimir_arv_palavras(port_ingles[j].words);
-                printf("%s\n", port_ingles[0].words->info);
+                printf("Unidade: %c\n", port_ingles[j].unidade);
+                imprimir_arv_palavras(port_ingles[j].words);
+                //printf("%s\n", port_ingles[j].words->info);
             }
             break;
             
