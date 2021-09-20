@@ -68,7 +68,6 @@ void insere_lista(struct lista_equivalentes **begin, struct lista_equivalentes *
         *begin = No;
         
     }else{
-        printf("aqui No.info = %s\n", No->info);
         insere_lista(&(**begin).prox, No);
     }
 
@@ -85,6 +84,20 @@ void imprimir_lista(struct lista_equivalentes *begin){
     printf("\n");
 }
 ///ALOCAÇÃO E INSERSÃO NA ARVORE
+
+int existe_elem_lista(struct lista_equivalentes *begin, char palavra[100]){
+    int res;
+    res = 0;
+    if(compare_strings(palavra,begin->info)==-1){
+        res = 1;
+    }else if(begin == NULL){
+        res = 0;
+    }else{
+        res = existe_elem_lista(begin->prox, palavra);
+    }
+
+    return res;
+}
 struct arv_palavras *aloca_arv_palavras(char port_word[100], char english_word[100]){
     struct arv_palavras *new;
     struct lista_equivalentes *lista_begin, *No;
@@ -95,7 +108,6 @@ struct arv_palavras *aloca_arv_palavras(char port_word[100], char english_word[1
 
     new = (struct arv_palavras*)malloc(sizeof(struct arv_palavras));
     strcpy(new->info, port_word);
-
     No = aloca_lista(english_word);
     insere_lista(&lista_begin, No);
 
@@ -114,6 +126,7 @@ int inserir_arv_palavras(struct arv_palavras **root, struct arv_palavras *No){
     if(*root == NULL){
         *root = No;
         res = 1;
+    
     }else{
         if(compare_strings(No->info, (*root)->info) == 0){
             res = inserir_arv_palavras(&(**root).left, No);
@@ -124,8 +137,7 @@ int inserir_arv_palavras(struct arv_palavras **root, struct arv_palavras *No){
     return res;
 }
 
-
-//recebe a raiz da arvore como parametro e imprime in-ordem -> esq -> raiz -> dir
+//recebe a raiz da arvore como parametro e imprime in-ordem -> left -> raiz -> right
 void imprimir_arv_palavras(struct arv_palavras *root){
     if(root != NULL){
         printf("Palavra: %s\n", root->info);
@@ -134,6 +146,36 @@ void imprimir_arv_palavras(struct arv_palavras *root){
         imprimir_arv_palavras(root->left);
         imprimir_arv_palavras(root->right);
     }
+}
+
+int existe_palavra(struct arv_palavras *root, char portugues[100]){
+    int res;
+    res = 0;
+    if(compare_strings(portugues, (*root).info) == -1){
+        res = 1;
+    }else{
+        if(compare_strings(portugues, (*root).info) == 0){
+            res = existe_palavra((*root).left, portugues);
+        }else if (compare_strings(portugues, (*root).info) == 1){
+            res = existe_palavra((*root).right, portugues);
+        }
+    }
+    return res;
+}
+
+//retorna o endereço de uma palavra na arvore
+struct arv_palavras *busca_palavra(struct arv_palavras **root, char portugues[100]){
+    struct arv_palavras *res;
+    if(compare_strings(portugues, (*root)->info) == -1){
+        res = *root;
+    }else{
+        if(compare_strings(portugues, (*root)->info) == 0){
+            res = busca_palavra(&(**root).left, portugues);
+        }else if (compare_strings(portugues, (*root)->info) == 1){
+            res = busca_palavra(&(**root).right, portugues);
+        }
+    }
+    return res;
 }
 
 ////////////////////////////
@@ -162,7 +204,6 @@ struct unit unidade(struct unit unidade,char palavra[100]){
         if(palavra[i] == '.' || palavra[i] == '\0'|| palavra[i] == ','){
 
             portugues_word[j-1] = '\0';
-            printf("Port: %s - En: %s\n", portugues_word, english_word);
 
             No = aloca_arv_palavras(portugues_word, english_word);
             res = inserir_arv_palavras(&unidade.words, No);
@@ -177,9 +218,66 @@ struct unit unidade(struct unit unidade,char palavra[100]){
     
 }
 
+
+//libera lista
+void list_libera(struct lista_equivalentes *begin) {
+   if (begin != NULL) {
+      list_libera (begin->prox);
+      free(begin);
+   }
+}
+//Realiza a remoção do elemento raiz Raiz
+struct arv_palavras* abb_removeraiz (struct arv_palavras * r) {  
+    struct arv_palavras *p, *q;
+    if (r->left == NULL) {
+       q = r->right;
+       list_libera(r->l);
+       free (r);
+    }else{
+        p = r; 
+        q = r->left;
+        while (q->right != NULL) {
+            p = q; 
+            q = q->right;
+        }
+        // q é nó anterior a r na ordem e-r-d
+        // p é pai de q
+        if (p != r) {
+        p->right = q->left;
+        q->left = r->left;
+        }
+        q->right = r->right;
+        list_libera(r->l);
+        free (r);
+        
+    }
+
+    return q;
+}
+
+//Busca o No que deseja remover e realiza a remoção com a 
+//função 'abb_removeraiz'.
+struct arv_palavras* abb_remove (struct arv_palavras *arvore, char info[100])
+{
+    struct arv_palavras* aux;
+    aux = arvore;
+
+    if (arvore == NULL){
+        aux = NULL;
+    }else if (compare_strings(info, arvore->info) == 0){
+        aux->left = abb_remove(arvore->left, info);
+    }else if (compare_strings(info, arvore->info) == 1){
+        aux->right = abb_remove(arvore->right, info);
+    }else {
+        
+        aux = abb_removeraiz(aux);
+    }
+    return aux;
+}
+
 int menu(){
     int escolha;
-    printf("1 - Preencher Arvores\n0 - Sair\n");
+    printf("1 - Preencher Arvores\n2 - Imprimir tudo\n3 - Imprimir Todas As Palavras Inglesas Equivalentes A Uma Portuguesa\n4 - Remover Palavra De Uma Unidade\n0 - Sair\n");
     scanf("%d", &escolha);
 
     return escolha;
@@ -187,11 +285,14 @@ int menu(){
 
 int main(){
     struct unit port_ingles[TAM];
-
-    int escolha, res, i=-1;
-    char c[100], c1;
+    struct arv_palavras *teste;
+    int escolha, res, i=-1, j=0;
+    char c[100], c_escolha, word[100];
     FILE *filename;
 
+    for(int a=0; a < TAM; a++){
+        port_ingles[a].words = NULL;
+    }
     
 
     filename = fopen("livro_texto.txt", "r");
@@ -207,7 +308,6 @@ int main(){
                 if(c[0] == '%'){
                     i++;
                     port_ingles[i].unidade = c[1];
-                    //printf("%s\n", c);
                 }else if (strlen(c) > 0){
                     port_ingles[i] = unidade(port_ingles[i],c);
                 } 
@@ -215,15 +315,34 @@ int main(){
   
             //printf("%c\n", port_ingles[2].unidade);
             
-            break;
+            break; 
         case 2:
-            for(int j=0;j < i;j++){
-                printf("Unidade: %c\n", port_ingles[j].unidade);
-                imprimir_arv_palavras(port_ingles[j].words);
-                //printf("%s\n", port_ingles[j].words->info);
+            printf("Informe uma Unidade:");
+            scanf("%s", &c_escolha);
+            setbuf(stdin,NULL);
+            j=0;
+            while(j < i || c_escolha != port_ingles[j].unidade){
+                j++;
             }
-            break;
+            if(c_escolha == port_ingles[j].unidade){
+                imprimir_arv_palavras(port_ingles[j].words);
+                
+            }
             
+            break;
+        case 3:
+            j = existe_palavra(port_ingles->words, "casa");
+            break;
+        
+        case 4:
+            printf("Informe uma Palavra:");
+            scanf("%s", word);
+            setbuf(stdin, NULL);
+            for(j=0; j< i; j++){
+                port_ingles[j].words = abb_remove(port_ingles[j].words, word);
+            }
+
+            break;
         default:
             break;
         }
