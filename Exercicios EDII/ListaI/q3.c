@@ -163,7 +163,7 @@ int existe_palavra(struct arv_palavras *root, char portugues[100]){
     return res;
 }
 
-//retorna o endereço de uma palavra na arvore
+//retorna o endereço/No de uma palavra na arvore
 struct arv_palavras *busca_palavra(struct arv_palavras **root, char portugues[100]){
     struct arv_palavras *res;
     if(compare_strings(portugues, (*root)->info) == -1){
@@ -226,7 +226,7 @@ void list_libera(struct lista_equivalentes *begin) {
       free(begin);
    }
 }
-//Realiza a remoção do elemento raiz Raiz
+//Realiza a remoção do elemento raiz Raiz passado por parâmetro
 struct arv_palavras* abb_removeraiz (struct arv_palavras * r) {  
     struct arv_palavras *p, *q;
     if (r->left == NULL) {
@@ -274,6 +274,8 @@ struct arv_palavras* abb_remove (struct arv_palavras *arvore, char info[100])
     }
     return aux;
 }
+
+
 
 int menu(){
     int escolha;
@@ -331,7 +333,19 @@ int main(){
             
             break;
         case 3:
-            j = existe_palavra(port_ingles->words, "casa");
+            printf("Informe uma Palavra em Portugues: ");
+            scanf("%s", word);
+            setbuf(stdin,NULL);
+            j=0;
+            while(j < i && res != 1){
+                res = existe_palavra(port_ingles[j].words, word);
+                j++;
+            }
+            if(res == 1){
+                teste = busca_palavra(&port_ingles[j-1].words, word);
+                imprimir_lista(teste->l);
+
+            }
             break;
         
         case 4:
