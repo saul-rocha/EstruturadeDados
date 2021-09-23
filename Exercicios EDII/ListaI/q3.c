@@ -289,7 +289,8 @@ int main(){
     struct unit port_ingles[TAM];
     struct arv_palavras *teste;
     int escolha, res, i=-1, j=0;
-    char c[100], c_escolha, word[100];
+    char c[100], word[100];
+    char c_escolha;
     FILE *filename;
 
     for(int a=0; a < TAM; a++){
@@ -315,21 +316,20 @@ int main(){
                 } 
             }
   
-            //printf("%c\n", port_ingles[2].unidade);
-            
+            //printf("%s\n", port_ingles[4].words->info);
+            //imprimir_arv_palavras(port_ingles[2].words);
             break; 
         case 2:
             printf("Informe uma Unidade:");
-            scanf("%s", &c_escolha);
+            scanf("%c", &c_escolha);
             setbuf(stdin,NULL);
             j=0;
             while(j < i || c_escolha != port_ingles[j].unidade){
                 j++;
             }
-            if(c_escolha == port_ingles[j].unidade){
-                imprimir_arv_palavras(port_ingles[j].words);
-                
-            }
+            
+            imprimir_arv_palavras(port_ingles[j].words);   
+            
             
             break;
         case 3:
@@ -355,6 +355,7 @@ int main(){
             for(j=0; j< i; j++){
                 port_ingles[j].words = abb_remove(port_ingles[j].words, word);
             }
+            printf("%s", port_ingles->words->info);
 
             break;
         default:

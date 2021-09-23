@@ -3,26 +3,6 @@
 #include "arvore_binaria.h"
 
 
-void ola_mundo(){
-    printf("Ola mundo");
-}
-
-//Função que retorna uma função vazia
-struct noArv* arv_criavazia (void){
-    return NULL;
-}
-
-//Inicia uma arvore com seu primeiro valor.
-struct noArv* arv_cria(int id, struct noArv* sae, struct noArv* sad)
-{
- struct noArv* arvore_binaria=(struct noArv*)malloc(sizeof(struct noArv));
- if(arvore_binaria==NULL) exit(1);
- arvore_binaria->id = id;
- arvore_binaria->esq = sae;
- arvore_binaria->dir = sad;
- return arvore_binaria;
-}
-
 //Liberando a arvore
 struct noArv* avr_libera(struct noArv* arvore)
 {
@@ -33,16 +13,6 @@ struct noArv* avr_libera(struct noArv* arvore)
     }
     return NULL;
 };
-
-//Verificando a ocorrencia de um ID em uma ARVORE
-int arv_pertence(struct noArv* arvore, int id)
-{
-    if (arvore == NULL){
-        return 0; /* árvore vazia: não encontrou */
-    }else{
-        return arvore->id==id || arv_pertence(arvore->esq,id) || arv_pertence(arvore->dir,id);
-    }
-}
 
 //Imprimir os elementos das arvores
 void arv_imprime(struct noArv* arvore)
@@ -97,15 +67,17 @@ struct noArv* abb_removeraiz (struct noArv* r) {
        q = r->dir;
        free (r);
     }else{
-        p = r; q = r->esq;
+        p = r;
+        q = r->esq;
         while (q->dir != NULL) {
-        p = q; q = q->dir;
+            p = q;
+            q = q->dir;
         }
         // q é nó anterior a r na ordem e-r-d
         // p é pai de q
         if (p != r) {
-        p->dir = q->esq;
-        q->esq = r->esq;
+            p->dir = q->esq;
+            q->esq = r->esq;
         }
         q->dir = r->dir;
         free (r);
@@ -129,7 +101,8 @@ struct noArv* abb_remove (struct noArv* arvore, int id)
         aux->dir = abb_remove(arvore->dir, id);
     }else {
         printf("Else: Raiz = %d\n",arvore->id);
-        printf("secao: ");arv_imprime(aux);
+        printf("secao: ");
+        arv_imprime(aux);
         aux = abb_removeraiz(aux);
     }
     return aux;
