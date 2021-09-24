@@ -1,9 +1,6 @@
 %1
 house:casa.
 dog:cachorro,cachorra,cachorro.
-snake:cobra.
-vyper:cobra.
-turtle:tartaruga.
 ninja:ninja.
 %2
 up:cima,alto.
@@ -27,4 +24,13 @@ boots:botas.
 gloves:luvas.
 hood:capuz.
 armor:armadura.
+spyder:aranha.
+superman:superhomem.
+bataman:batman,homemmorcego.
+flash:flash.
+happy:feliz,alegre.
+house:casa.
+house:casa.
+fly:voar.
+fly:voar.
 %

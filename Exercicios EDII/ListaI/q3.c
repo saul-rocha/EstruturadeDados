@@ -5,6 +5,7 @@
 #include <ctype.h>
 
 #define TAM 20
+ 
 struct lista_equivalentes{
 	char info[100];
 	struct lista_equivalentes *prox;
@@ -148,31 +149,19 @@ void imprimir_arv_palavras(struct arv_palavras *root){
     }
 }
 
-int existe_palavra(struct arv_palavras *root, char portugues[100]){
-    int res;
-    res = 0;
-    if(compare_strings(portugues, (*root).info) == -1){
-        res = 1;
-    }else{
-        if(compare_strings(portugues, (*root).info) == 0){
-            res = existe_palavra((*root).left, portugues);
-        }else if (compare_strings(portugues, (*root).info) == 1){
-            res = existe_palavra((*root).right, portugues);
-        }
-    }
-    return res;
-}
 
 //retorna o endereço/No de uma palavra na arvore
-struct arv_palavras *busca_palavra(struct arv_palavras **root, char portugues[100]){
+struct arv_palavras *busca_palavra(struct arv_palavras *root, char portugues[100]){
     struct arv_palavras *res;
-    if(compare_strings(portugues, (*root)->info) == -1){
-        res = *root;
+    if(root == NULL){
+        res = NULL;
     }else{
-        if(compare_strings(portugues, (*root)->info) == 0){
-            res = busca_palavra(&(**root).left, portugues);
-        }else if (compare_strings(portugues, (*root)->info) == 1){
-            res = busca_palavra(&(**root).right, portugues);
+        if(compare_strings(portugues, root->info) == 0){
+            res = busca_palavra(root->left, portugues);
+        }else if (compare_strings(portugues, root->info) == 1){
+            res = busca_palavra(root->right, portugues);
+        }else{
+            res = root;
         }
     }
     return res;
@@ -288,10 +277,13 @@ int menu(){
 int main(){
     struct unit port_ingles[TAM];
     struct arv_palavras *teste;
+    struct lista_equivalentes *l;
     int escolha, res, i=-1, j=0;
     char c[100], word[100];
-    char c_escolha;
+    char a;
     FILE *filename;
+    clock_t t_insercao, t_busca;
+    float t_insercao_medio,t_busca_medio;
 
     for(int a=0; a < TAM; a++){
         port_ingles[a].words = NULL;
@@ -305,6 +297,7 @@ int main(){
         switch (escolha)
         {
         case 1:
+            
             while(!feof(filename)){
                 fgets(c,100,filename);
 
@@ -312,40 +305,49 @@ int main(){
                     i++;
                     port_ingles[i].unidade = c[1];
                 }else if (strlen(c) > 0){
+                    t_insercao = (double)clock();//Tempo inicial
                     port_ingles[i] = unidade(port_ingles[i],c);
+                    t_insercao = (((double)clock()) - t_insercao);
                 } 
             }
-  
-            //printf("%s\n", port_ingles[4].words->info);
+            
+
+            
+            //printf("TEMPO DE INSERCAO: %.10lf\nTEMPO MEDIO DE INSERCAO: %.10lf\n", ((double)t_insercao), ((double)t_insercao_medio));
+            printf("TEMPO DE INSERCAO: %.2lf\n", ((double)t_insercao));
             //imprimir_arv_palavras(port_ingles[2].words);
             break; 
         case 2:
-            printf("Informe uma Unidade:");
-            scanf("%c", &c_escolha);
+            
             setbuf(stdin,NULL);
-            j=0;
-            while(j < i || c_escolha != port_ingles[j].unidade){
-                j++;
+            printf("Informe uma Unidade: ");
+            scanf("%c", &a);
+            setbuf(stdin,NULL);
+            printf("%c", a);
+            for(j=0; j < i; j++){
+                if(a == port_ingles[j].unidade){
+                    imprimir_arv_palavras(port_ingles[j].words); 
+                    j = i;
+                }
             }
-            
-            imprimir_arv_palavras(port_ingles[j].words);   
-            
             
             break;
         case 3:
             printf("Informe uma Palavra em Portugues: ");
             scanf("%s", word);
-            setbuf(stdin,NULL);
-            j=0;
-            while(j < i && res != 1){
-                res = existe_palavra(port_ingles[j].words, word);
-                j++;
-            }
-            if(res == 1){
-                teste = busca_palavra(&port_ingles[j-1].words, word);
-                imprimir_lista(teste->l);
+            
+            for(j=0;j<i;j++){
+                t_busca = clock();//Tempo inicial
+                teste = busca_palavra(port_ingles[j].words,word);
+                t_busca = (clock() - t_busca);
+                //tempo final - tempo inicial
+                if(teste != NULL){
+                    printf("TEMPO DE BUSCA: %.2lf\n", ((double)t_busca));
+                    imprimir_lista(teste->l);
 
+                }
             }
+            
             break;
         
         case 4:
@@ -355,9 +357,9 @@ int main(){
             for(j=0; j< i; j++){
                 port_ingles[j].words = abb_remove(port_ingles[j].words, word);
             }
-            printf("%s", port_ingles->words->info);
 
             break;
+        
         default:
             break;
         }

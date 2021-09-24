@@ -5,6 +5,7 @@
 #include <ctype.h>
 
 #define TAM 20
+ 
 struct lista_equivalentes{
 	char info[100];
 	struct lista_equivalentes *prox;
@@ -137,6 +138,109 @@ int inserir_arv_palavras(struct arv_palavras **root, struct arv_palavras *No){
     return res;
 }
 
+//altura de um no
+int altura_No(struct arv_palavras *root){
+    int res, r=0, l=0;
+    if (root == NULL){
+        res = -1;
+    }else{
+        l = altura_No(root->left);
+        r = altura_No(root->right);
+        if(l > r){
+            res = l+1;
+        }else{
+            res = r+1;
+        }
+    }
+    return res;
+   
+}
+
+//profundidade de um nó
+int maior_profundidade_No(struct arv_palavras *root){
+    int res, r=0, l=0;
+    if (root == NULL){
+        res = -1;
+    }else{
+        l = altura_No(root->left);
+        r = altura_No(root->right);
+        if(l > r){
+            res = l+1;
+        }else{
+            res = r+1;
+        }
+    }
+    return res;
+   
+}
+
+int balanceada(int altura1, int altura2){
+    int res;
+    res = altura1 - altura2;
+
+    return res;
+}
+
+
+struct arv_palavras *gira_horario(struct arv_palavras *root){
+    struct arv_palavras *No;
+    No = root->left;
+
+    root->left = No->right;
+    No->right = root;
+
+    root = No;
+
+    return root;
+}
+struct arv_palavras *gira_anti_horario(struct arv_palavras *root){
+    struct arv_palavras *No;
+
+    No = root->right;
+
+    root->right = No->left;
+    No->left = root;
+
+    root = No;
+
+    return root;
+}
+
+
+void balanco_avl(struct arv_palavras **root){
+    int altura_left, altura_rigth, fator_b;
+    struct arv_palavras *No;
+
+    fator_b =balanceada(altura_No((*root)->left), altura_No((*root)->right));
+
+    // > 1 se desbalanceada para a esquerda
+    if(fator_b > 1){
+        No = (*root)->left;
+        //ver qual o galho é maior. interno se fator_b < 0 e externo caso contrario
+        fator_b = balanceada(altura_No(No->left), altura_No(No->right));
+        if(fator_b < 0){
+            //gira no sentido anti-horario se o galho interno for o maior
+            (*root)->left = gira_anti_horario((*root)->left);
+        }
+        //gira o nó desbalanceado
+        *root = gira_horario(*root);
+    // < 1 se desbalanceada para a direita
+    }else if(fator_b < -1){
+            No = (*root)->right;
+             //ver qual o galho é maior. interno se fator_b > 0 e externo caso contrario
+            fator_b = balanceada(altura_No(No->left), altura_No(No->right));
+            if(fator_b > 0){
+                //gira no sentido horario
+                (*root)->right = gira_horario((*root)->right);
+            }
+            //gira o nó desbalanceado
+            *root = gira_anti_horario(*root);
+
+        }
+    
+
+}
+
 //recebe a raiz da arvore como parametro e imprime in-ordem -> left -> raiz -> right
 void imprimir_arv_palavras(struct arv_palavras *root){
     if(root != NULL){
@@ -148,31 +252,18 @@ void imprimir_arv_palavras(struct arv_palavras *root){
     }
 }
 
-int existe_palavra(struct arv_palavras *root, char portugues[100]){
-    int res;
-    res = 0;
-    if(compare_strings(portugues, (*root).info) == -1){
-        res = 1;
-    }else{
-        if(compare_strings(portugues, (*root).info) == 0){
-            res = existe_palavra((*root).left, portugues);
-        }else if (compare_strings(portugues, (*root).info) == 1){
-            res = existe_palavra((*root).right, portugues);
-        }
-    }
-    return res;
-}
-
 //retorna o endereço/No de uma palavra na arvore
-struct arv_palavras *busca_palavra(struct arv_palavras **root, char portugues[100]){
+struct arv_palavras *busca_palavra(struct arv_palavras *root, char portugues[100]){
     struct arv_palavras *res;
-    if(compare_strings(portugues, (*root)->info) == -1){
-        res = *root;
+    if(root == NULL){
+        res = NULL;
     }else{
-        if(compare_strings(portugues, (*root)->info) == 0){
-            res = busca_palavra(&(**root).left, portugues);
-        }else if (compare_strings(portugues, (*root)->info) == 1){
-            res = busca_palavra(&(**root).right, portugues);
+        if(compare_strings(portugues, root->info) == 0){
+            res = busca_palavra(root->left, portugues);
+        }else if (compare_strings(portugues, root->info) == 1){
+            res = busca_palavra(root->right, portugues);
+        }else{
+            res = root;
         }
     }
     return res;
@@ -207,6 +298,7 @@ struct unit unidade(struct unit unidade,char palavra[100]){
 
             No = aloca_arv_palavras(portugues_word, english_word);
             res = inserir_arv_palavras(&unidade.words, No);
+            balanco_avl(&unidade.words);
             //printf("unit: %s\n", unidade.words->l->info);
             j=0;
             if(!res){
@@ -289,14 +381,17 @@ int main(){
     struct unit port_ingles[TAM];
     struct arv_palavras *teste;
     int escolha, res, i=-1, j=0;
-    char c[100], c_escolha, word[100];
+    char c[100], word[100];
+    char a;
     FILE *filename;
+    clock_t t_insercao, t_busca;
+    float t_insercao_medio,t_busca_medio;
 
     for(int a=0; a < TAM; a++){
         port_ingles[a].words = NULL;
     }
     
-
+    printf("AVL\n");
     filename = fopen("livro_texto.txt", "r");
    
     do{
@@ -304,6 +399,7 @@ int main(){
         switch (escolha)
         {
         case 1:
+            
             while(!feof(filename)){
                 fgets(c,100,filename);
 
@@ -311,52 +407,61 @@ int main(){
                     i++;
                     port_ingles[i].unidade = c[1];
                 }else if (strlen(c) > 0){
+                    t_insercao = (double)clock();//Tempo inicial
                     port_ingles[i] = unidade(port_ingles[i],c);
+                    t_insercao = (((double)clock()) - t_insercao); //tempo final
                 } 
             }
-  
-            //printf("%c\n", port_ingles[2].unidade);
-            
+           
+
+            printf("TEMPO DE INSERCAO: %.2lf\n", ((double)t_insercao));
+            //imprimir_arv_palavras(port_ingles[2].words);
             break; 
         case 2:
-            printf("Informe uma Unidade:");
-            scanf("%s", &c_escolha);
+            
             setbuf(stdin,NULL);
-            j=0;
-            while(j < i || c_escolha != port_ingles[j].unidade){
-                j++;
-            }
-            if(c_escolha == port_ingles[j].unidade){
-                imprimir_arv_palavras(port_ingles[j].words);
-                
+            printf("Informe uma Unidade: ");
+            scanf("%c", &a);
+            setbuf(stdin,NULL);
+            printf("%c", a);
+            for(j=0; j < i; j++){
+                if(a == port_ingles[j].unidade){
+                    imprimir_arv_palavras(port_ingles[j].words); 
+                    j = i;
+                }
             }
             
             break;
         case 3:
             printf("Informe uma Palavra em Portugues: ");
             scanf("%s", word);
-            setbuf(stdin,NULL);
-            j=0;
-            while(j < i && res != 1){
-                res = existe_palavra(port_ingles[j].words, word);
-                j++;
-            }
-            if(res == 1){
-                teste = busca_palavra(&port_ingles[j-1].words, word);
-                imprimir_lista(teste->l);
+            
+            for(j=0;j<i;j++){
+                t_busca = clock();//Tempo inicial
+                teste = busca_palavra(port_ingles[j].words,word);
+                t_busca = (clock() - t_busca);
+                //tempo final - tempo inicial
+                if(teste != NULL){
+                    printf("TEMPO DE BUSCA: %.2lf\n", ((double)t_busca));
+                    imprimir_lista(teste->l);
 
+                }
             }
+            
             break;
         
         case 4:
             printf("Informe uma Palavra:");
             scanf("%s", word);
             setbuf(stdin, NULL);
+             
             for(j=0; j< i; j++){
                 port_ingles[j].words = abb_remove(port_ingles[j].words, word);
             }
-
+            balanco_avl(&port_ingles->words);
+    
             break;
+        
         default:
             break;
         }
